@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azamat Matnazarov — Content Marketer</title>
+<meta name="description" content="Marketing, kontent, brendlar va kundalik kuzatuvlar haqida">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5B21D1; --purple-light: #7C3AED; --purple-pale: #EDE9FE; --purple-dark: #3B0FA0;
+    --bg: #fafaf9; --bg-card: #ffffff; --text: #1a1a1a; --text-muted: #6b6b6b;
+    --text-faint: #9ca3af; --border: rgba(0,0,0,0.08); --border-hover: rgba(91,33,209,0.25);
+    --nav-bg: rgba(250,250,249,0.85);
+  }
+  [data-theme="dark"] {
+    --bg: #0f0e13; --bg-card: #1a1825; --text: #f0eeff; --text-muted: #a097c0;
+    --text-faint: #6b6375; --border: rgba(255,255,255,0.08); --border-hover: rgba(124,58,237,0.4);
+    --nav-bg: rgba(15,14,19,0.85); --purple-pale: #1e1540;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; font-size: 17px; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+  .logo-circle { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo-m { font-weight: 700; font-size: 17px; color: white; letter-spacing: -0.5px; }
+  .nav-site-name { font-size: 16px; font-weight: 600; }
+  .nav-links { display: flex; align-items: center; gap: 2rem; }
+  .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 15px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--purple); }
+  .theme-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s; }
+  .theme-btn:hover { border-color: var(--purple); color: var(--purple); }
+
+  .hero { padding: 120px 2rem 80px; max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); background: var(--purple-pale); padding: 6px 14px; border-radius: 20px; width: fit-content; }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--purple); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+  .hero h1 { font-size: clamp(3rem, 7vw, 5rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; }
+  .hero h1 em { font-style: italic; color: var(--purple); font-weight: 400; }
+  .hero-bio { font-size: 1.15rem; line-height: 1.8; color: var(--text-muted); max-width: 580px; }
+  .hero-social { display: flex; gap: 12px; }
+  .social-link { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); text-decoration: none; color: var(--text-muted); font-size: 15px; font-weight: 500; transition: all 0.2s; }
+  .social-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .social-link:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-pale); }
+
+  .section { max-width: 860px; margin: 0 auto; padding: 60px 2rem; border-top: 1px solid var(--border); }
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px; }
+  .section-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+  .see-all { font-size: 15px; font-weight: 600; color: var(--purple); text-decoration: none; }
+  .see-all:hover { opacity: 0.7; }
+
+  /* CARD GRIDS */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .card {
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 24px; border: 1px solid var(--border); border-radius: 16px;
+    background: var(--bg-card); cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
+  .card:hover .card-title { color: var(--purple); }
+  .card-top { flex: 1; }
+  .card-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
+  .card-title { font-size: 1.1rem; font-weight: 600; line-height: 1.4; margin-bottom: 10px; transition: color 0.2s; color: var(--text); }
+  .card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+  .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .card-date { font-size: 13px; color: var(--text-faint); }
+  .card-arrow { font-size: 18px; color: var(--purple); }
+
+  /* PHOTO CARDS */
+  .photo-card { border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .photo-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
+  .photo-card:hover .card-title { color: var(--purple); }
+  .photo-img-area { width: 100%; aspect-ratio: 4/3; background: var(--purple-pale); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .photo-img-area img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+  .photo-card:hover .photo-img-area img { transform: scale(1.04); }
+  .photo-placeholder-inner { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .photo-icon { font-size: 32px; opacity: 0.35; }
+  .photo-coming { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
+  .photo-info { padding: 18px 20px; }
+
+  /* WORK CARDS */
+  .work-card { padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+  .work-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
+  .work-card:hover .card-title { color: var(--purple); }
+  .work-left { flex: 1; }
+  .work-role { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+  .work-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-top: 6px; }
+  .work-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .work-tag { font-size: 13px; font-weight: 600; padding: 4px 11px; border-radius: 5px; background: var(--purple-pale); color: var(--purple); }
+  .work-arrow { font-size: 20px; color: var(--purple); flex-shrink: 0; }
+
+  /* BOOKS */
+  .books-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+  .book-card { border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .book-card:hover { border-color: var(--border-hover); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); }
+  .book-cover-area { width: 100%; aspect-ratio: 3/4; background: var(--purple-pale); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .book-cover-area img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .book-cover-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .book-cover-placeholder-icon { font-size: 36px; opacity: 0.3; }
+  .book-cover-placeholder-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+  .book-upload-overlay { position: absolute; inset: 0; background: rgba(91,33,209,0.75); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+  .book-cover-area:hover .book-upload-overlay { opacity: 1; }
+  .book-upload-label { font-size: 13px; font-weight: 600; color: white; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+  .book-cover-input { display: none; }
+  .book-info { padding: 16px 18px; }
+  .book-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; color: var(--text); }
+  .book-author { font-size: 13px; color: var(--text-faint); margin-bottom: 10px; }
+  .book-note { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border); max-width: 680px; width: 100%; padding: 40px; position: relative; animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 18px; transition: all 0.2s; }
+  .modal-close:hover { border-color: var(--purple); color: var(--purple); }
+  .modal-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 12px; }
+  .modal-title { font-size: 1.9rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; color: var(--text); }
+  .modal-date { font-size: 14px; color: var(--text-faint); margin-bottom: 20px; }
+  .modal-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .modal-body { font-size: 1.05rem; line-height: 1.85; color: var(--text-muted); }
+  .modal-body p { margin-bottom: 1.2em; }
+  .modal-body h2 { font-size: 1.2rem; font-weight: 600; color: var(--text); margin: 1.5em 0 0.6em; }
+  .modal-body strong { color: var(--text); font-weight: 600; }
+  .modal-body ul, .modal-body ol { padding-left: 1.4em; margin-bottom: 1em; }
+  .modal-body li { margin-bottom: 0.4em; }
+
+  /* LOADING */
+  .loading-placeholder { display: flex; gap: 20px; flex-wrap: wrap; }
+  .loading-card { flex: 1; min-width: 220px; height: 160px; border-radius: 16px; background: var(--border); animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+
+  footer { border-top: 1px solid var(--border); max-width: 860px; margin: 0 auto; padding: 40px 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-left { font-size: 15px; color: var(--text-faint); }
+  .footer-left span { color: var(--purple); font-weight: 600; }
+  .footer-right a { font-size: 15px; color: var(--text-faint); text-decoration: none; transition: color 0.2s; margin-left: 16px; }
+  .footer-right a:hover { color: var(--purple); }
+
+  /* HAMBURGER */
+  .hamburger-btn { display: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s; flex-shrink: 0; }
+  .hamburger-btn:hover { border-color: var(--purple); color: var(--purple); }
+  .nav-mobile-menu { display: none; }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .hamburger-btn { display: flex; }
+    .hero { padding: 100px 1.25rem 60px; }
+    .section { padding: 40px 1.25rem; }
+    footer { padding: 32px 1.25rem; }
+
+    .nav-mobile-menu.open {
+      display: flex; flex-direction: column; gap: 0;
+      position: fixed; top: 56px; left: 0; right: 0;
+      background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); z-index: 99; padding: 8px 0;
+    }
+    .nav-mobile-menu.open a {
+      text-decoration: none; color: var(--text-muted); font-size: 16px; font-weight: 500;
+      padding: 14px 1.25rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+    }
+    .nav-mobile-menu.open a:last-child { border-bottom: none; }
+    .nav-mobile-menu.open a:hover { color: var(--purple); }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="logo-circle"><span class="logo-m">m</span></div>
+    <span class="nav-site-name">marketeruz</span>
+  </a>
+  <div class="nav-links">
+    <a href="#thoughts">Fikrlar</a>
+    <a href="#photos">Rasmlar</a>
+    <a href="#works">Ishlar</a>
+    <a href="#books">Kitoblar</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+  <button class="hamburger-btn" id="hamburgerBtn" title="Menyu" aria-label="Menyuni ochish">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="5" x2="16" y2="5"/><line x1="2" y1="9" x2="16" y2="9"/><line x1="2" y1="13" x2="16" y2="13"/></svg>
+  </button>
+  <button class="theme-btn" id="themeBtn" title="Rejimni almashtirish">
+    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.78" y2="4.22"/></svg>
+    <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="#thoughts" onclick="closeMobileMenu()">Fikrlar</a>
+  <a href="#photos" onclick="closeMobileMenu()">Rasmlar</a>
+  <a href="#works" onclick="closeMobileMenu()">Ishlar</a>
+  <a href="#books" onclick="closeMobileMenu()">Kitoblar</a>
+</div>
+
+<section class="hero">
+  <div class="hero-tag">Content Marketer · Toshkent</div>
+  <h1>Azamat<br><em>Matnazarov</em></h1>
+  <p class="hero-bio">Marketing, kontent, brendlar va kundalik kuzatuvlar haqida yozaman. Raqamli muhitda insoniy ovoz qoldirish — mening asosiy ishim.</p>
+  <div class="hero-social">
+    <a class="social-link" href="https://www.instagram.com/azamat_matnazarovv/" target="_blank" rel="noopener">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Instagram
+    </a>
+    <a class="social-link" href="https://t.me/+5bb5VRnE48M1YjUy" target="_blank" rel="noopener">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Telegram
+    </a>
+  </div>
+</section>
+
+<!-- FIKRLAR -->
+<section class="section" id="thoughts">
+  <div class="section-header">
+    <h2 class="section-title">Fikrlar</h2>
+    <a class="see-all" href="#" id="fikrlar-all" style="display:none">Hammasini ko'r →</a>
+  </div>
+  <div id="fikrlar-container" class="cards-grid">
+    <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
+  </div>
+</section>
+
+<!-- RASMLAR -->
+<section class="section" id="photos">
+  <div class="section-header">
+    <h2 class="section-title">Rasmlar</h2>
+  </div>
+  <div id="rasmlar-container" class="cards-grid">
+    <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
+  </div>
+</section>
+
+<!-- ISHLAR -->
+<section class="section" id="works">
+  <div class="section-header">
+    <h2 class="section-title">Ishlar</h2>
+  </div>
+  <div id="ishlar-container" class="cards-grid">
+    <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div></div>
+  </div>
+</section>
+
+<!-- KITOBLAR -->
+<section class="section" id="books">
+  <div class="section-header">
+    <h2 class="section-title">Kitoblar</h2>
+  </div>
+  <div class="books-row">
+    <div class="book-card">
+      <div class="book-cover-area" onclick="document.getElementById('bi1').click()">
+        <div class="book-cover-placeholder" id="bp1"><div class="book-cover-placeholder-icon">📚</div><div class="book-cover-placeholder-text">Rasm yuklash</div></div>
+        <img id="bimg1" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="book-upload-overlay"><label class="book-upload-label" for="bi1"><span style="font-size:22px">↑</span> Rasm yuklash</label></div>
+        <input class="book-cover-input" id="bi1" type="file" accept="image/*" onchange="previewBook(this,'bimg1','bp1')">
+      </div>
+      <div class="book-info"><div class="book-title">Building a StoryBrand</div><div class="book-author">Donald Miller</div><div class="book-note">Brendning hikoyasini qanday yaratish haqida eng amaliy kitob.</div></div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover-area" onclick="document.getElementById('bi2').click()">
+        <div class="book-cover-placeholder" id="bp2"><div class="book-cover-placeholder-icon">📚</div><div class="book-cover-placeholder-text">Rasm yuklash</div></div>
+        <img id="bimg2" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="book-upload-overlay"><label class="book-upload-label" for="bi2"><span style="font-size:22px">↑</span> Rasm yuklash</label></div>
+        <input class="book-cover-input" id="bi2" type="file" accept="image/*" onchange="previewBook(this,'bimg2','bp2')">
+      </div>
+      <div class="book-info"><div class="book-title">Contagious</div><div class="book-author">Jonah Berger</div><div class="book-note">Nima uchun ba'zi g'oyalar va mahsulotlar tarqaladi.</div></div>
+    </div>
+    <div class="book-card">
+      <div class="book-cover-area" onclick="document.getElementById('bi3').click()">
+        <div class="book-cover-placeholder" id="bp3"><div class="book-cover-placeholder-icon">📚</div><div class="book-cover-placeholder-text">Rasm yuklash</div></div>
+        <img id="bimg3" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="book-upload-overlay"><label class="book-upload-label" for="bi3"><span style="font-size:22px">↑</span> Rasm yuklash</label></div>
+        <input class="book-cover-input" id="bi3" type="file" accept="image/*" onchange="previewBook(this,'bimg3','bp3')">
+      </div>
+      <div class="book-info"><div class="book-title">Ogilvy on Advertising</div><div class="book-author">David Ogilvy</div><div class="book-note">Reklama klassikasi. Hozirgi davr uchun ham dolzarb.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">© 2025 <span>Azamat Matnazarov</span> · marketeruz</div>
+  <div class="footer-right">
+    <a href="https://www.instagram.com/azamat_matnazarovv/" target="_blank">Instagram</a>
+    <a href="https://t.me/+5bb5VRnE48M1YjUy" target="_blank">Telegram</a>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="post-modal" onclick="if(event.target===this){closeModal()}">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-label" class="modal-label"></div>
+    <div id="modal-title" class="modal-title"></div>
+    <div id="modal-date" class="modal-date"></div>
+    <hr class="modal-divider">
+    <div id="modal-body" class="modal-body"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+<script>
+// ── THEME (localStorage bilan saqlanadi) ──
+const themeBtn = document.getElementById('themeBtn');
+let dark = localStorage.getItem('theme') === 'dark';
+function applyTheme() {
+  document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('sunIcon').style.display = dark ? 'none' : 'block';
+  document.getElementById('moonIcon').style.display = dark ? 'block' : 'none';
+}
+applyTheme();
+themeBtn.addEventListener('click', () => {
+  dark = !dark;
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+  applyTheme();
+});
+
+// ── HAMBURGER MENU ──
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburgerBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+function closeMobileMenu() {
+  mobileMenu.classList.remove('open');
+}
+
+// ── HTML ESCAPE (injection himoyasi) ──
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ── BOOK IMAGE PREVIEW ──
+function previewBook(input, previewId, placeholderId) {
+  const file = input.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img = document.getElementById(previewId);
+    img.src = e.target.result; img.style.display = 'block';
+    document.getElementById(placeholderId).style.display = 'none';
+  };
+  r.readAsDataURL(file);
+}
+
+// ── MODAL ──
+function openModal(label, title, date, bodyHtml) {
+  document.getElementById('modal-label').textContent = label;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-date').textContent = date;
+  document.getElementById('modal-body').innerHTML = DOMPurify.sanitize(bodyHtml);
+  document.getElementById('post-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('post-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── FETCH & PARSE MARKDOWN POSTS ──
+async function fetchPost(path) {
+  try {
+    const res = await fetch(path);
+    if (!res.ok) return null;
+    const text = await res.text();
+    const fm = {};
+    let body = text;
+    if (text.startsWith('---')) {
+      const end = text.indexOf('---', 3);
+      if (end !== -1) {
+        text.slice(3, end).trim().split('\n').forEach(line => {
+          const i = line.indexOf(':');
+          if (i > -1) fm[line.slice(0,i).trim()] = line.slice(i+1).trim().replace(/^"|"$/g,'');
+        });
+        body = text.slice(end + 3).trim();
+      }
+    }
+    return { ...fm, body };
+  } catch { return null; }
+}
+
+async function loadSection(indexPath, containerEl, renderFn) {
+  try {
+    const res = await fetch(indexPath);
+    if (!res.ok) { containerEl.innerHTML = ''; return; }
+    const files = await res.json();
+    const posts = (await Promise.all(files.map(f => fetchPost(f)))).filter(Boolean);
+    posts.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+    containerEl.innerHTML = '';
+    if (!posts.length) { containerEl.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali post yo\'q.</p>'; return; }
+    posts.forEach(p => containerEl.appendChild(renderFn(p)));
+  } catch {
+    containerEl.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali post yo\'q.</p>';
+  }
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  const months = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+  const dt = new Date(d);
+  return months[dt.getMonth()] + ' ' + dt.getFullYear();
+}
+
+function renderFikr(p) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `
+    <div class="card-top">
+      <div class="card-label">${esc(p.category || 'Fikr')}</div>
+      <div class="card-title">${esc(p.title)}</div>
+      <div class="card-desc">${esc(p.description)}</div>
+    </div>
+    <div class="card-footer">
+      <span class="card-date">${esc(fmtDate(p.date))}</span>
+      <span class="card-arrow">→</span>
+    </div>`;
+  el.onclick = () => openModal(p.category || 'Fikr', p.title, fmtDate(p.date), marked.parse(p.body || ''));
+  return el;
+}
+
+function renderIsh(p) {
+  const tags = (p.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+  const el = document.createElement('div');
+  el.className = 'work-card';
+  el.innerHTML = `
+    <div class="work-left">
+      <div class="work-role">${esc(p.role)}</div>
+      <div class="card-title">${esc(p.title)}</div>
+      <div class="work-desc">${esc(p.description)}</div>
+      <div class="work-tags">${tags.map(t => `<span class="work-tag">${esc(t)}</span>`).join('')}</div>
+    </div>
+    <span class="work-arrow">→</span>`;
+  el.onclick = () => openModal(p.role || 'Ish', p.title, fmtDate(p.date), marked.parse(p.body || ''));
+  return el;
+}
+
+function renderRasm(p) {
+  const el = document.createElement('div');
+  el.className = 'photo-card';
+  const imgHtml = p.image
+    ? `<img src="${esc(p.image)}" alt="${esc(p.title)}">`
+    : `<div class="photo-placeholder-inner"><div class="photo-icon">📷</div><div class="photo-coming">Tez kunda</div></div>`;
+  el.innerHTML = `
+    <div class="photo-img-area">${imgHtml}</div>
+    <div class="photo-info">
+      <div class="card-label">${esc(p.category || 'Rasm')}</div>
+      <div class="card-title">${esc(p.title)}</div>
+      <div class="card-desc">${esc(p.description)}</div>
+    </div>`;
+  el.onclick = () => openModal(p.category || 'Rasm', p.title, fmtDate(p.date), marked.parse(p.body || ''));
+  return el;
+}
+
+// Load all sections
+loadSection('/posts/fikrlar/index.json', document.getElementById('fikrlar-container'), renderFikr);
+loadSection('/posts/ishlar/index.json', document.getElementById('ishlar-container'), renderIsh);
+loadSection('/posts/rasmlar/index.json', document.getElementById('rasmlar-container'), renderRasm);
+</script>
+</body>
+</html>

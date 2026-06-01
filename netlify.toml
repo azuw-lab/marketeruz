@@ -1,0 +1,3 @@
+# Bu fayl eski Netlify static deploy uchun edi.
+# Loyiha endi Node.js Express server sifatida ishlamoqda.
+# Vercelga deploy uchun: vercel.json faylini ishlatamiz.

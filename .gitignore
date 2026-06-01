@@ -1,0 +1,9 @@
+node_modules/
+.env
+*.db
+*.db-shm
+*.db-wal
+uploads/
+.claude/
+blog/node_modules/
+.DS_Store

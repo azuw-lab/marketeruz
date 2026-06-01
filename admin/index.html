@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>marketeruz — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #5B21D1; --purple-light: #7C3AED; --purple-pale: #EDE9FE; --purple-dark: #3B0FA0;
+  --bg: #f5f4f9; --bg-card: #ffffff; --bg-sidebar: #ffffff;
+  --text: #1a1a1a; --text-muted: #6b6b6b; --text-faint: #9ca3af;
+  --border: rgba(0,0,0,0.08); --border-strong: rgba(0,0,0,0.15);
+  --sidebar-w: 240px; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+}
+[data-theme="dark"] {
+  --bg: #0f0e13; --bg-card: #1a1825; --bg-sidebar: #13111e;
+  --text: #f0eeff; --text-muted: #a097c0; --text-faint: #6b6375;
+  --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.15);
+  --purple-pale: #1e1540;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: 'Inter', sans-serif; font-size: 15px; background: var(--bg); color: var(--text); }
+button { font-family: inherit; cursor: pointer; }
+input, textarea, select { font-family: inherit; }
+a { text-decoration: none; color: inherit; }
+
+/* APP LAYOUT */
+#app { display: none; height: 100vh; overflow: hidden; }
+#app.visible { display: flex; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w); background: var(--bg-sidebar); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; overflow: hidden;
+}
+.sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+.logo-circle { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.logo-m { font-weight: 700; font-size: 17px; color: white; }
+.logo-text { font-size: 14px; font-weight: 700; color: var(--text); }
+.logo-sub { font-size: 11px; color: var(--purple); font-weight: 600; }
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+.nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); padding: 8px 20px 4px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; padding: 9px 20px;
+  font-size: 14px; font-weight: 500; color: var(--text-muted);
+  cursor: pointer; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { color: var(--purple); background: var(--purple-pale); }
+.nav-item.active { color: var(--purple); background: var(--purple-pale); font-weight: 600; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); }
+.user-badge { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); }
+.user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.user-name { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.logout-btn { width: 24px; height: 24px; border-radius: 6px; border: none; background: none; color: var(--text-faint); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+.logout-btn:hover { color: var(--danger); }
+.logout-btn svg { width: 14px; height: 14px; }
+
+/* MAIN CONTENT */
+.main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.topbar { height: 56px; border-bottom: 1px solid var(--border); background: var(--bg-card); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+.topbar-title { font-size: 17px; font-weight: 700; color: var(--text); }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.theme-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s; }
+.theme-btn:hover { border-color: var(--purple); color: var(--purple); }
+.hamburger-btn { display: none; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s; }
+.content-area { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* VIEWS */
+.view { display: none; }
+.view.active { display: block; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); }
+.stat-number { font-size: 2.2rem; font-weight: 700; color: var(--purple); line-height: 1; margin-bottom: 6px; }
+.stat-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+/* CARD BLOCK */
+.card-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); }
+.card-block-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn-primary { background: var(--purple); color: white; }
+.btn-primary:hover { background: var(--purple-light); }
+.btn-secondary { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
+.btn-danger { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+.btn-danger:hover { background: var(--danger); color: white; }
+.btn-sm { padding: 5px 11px; font-size: 13px; }
+.btn svg { width: 14px; height: 14px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* FORMS */
+.form-grid { display: flex; flex-direction: column; gap: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.form-label span { color: var(--text-faint); font-weight: 400; }
+.form-input, .form-select, .form-textarea { padding: 9px 12px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 14px; transition: border-color 0.2s; width: 100%; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(91,33,209,0.1); }
+.form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+.form-textarea.tall { min-height: 280px; }
+.form-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.form-check input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--purple); cursor: pointer; }
+.form-check span { font-size: 14px; color: var(--text); font-weight: 500; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead th { padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); border-bottom: 1px solid var(--border); white-space: nowrap; }
+tbody td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--purple-pale); }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 5px; font-size: 12px; font-weight: 600; }
+.badge-published { background: #d1fae5; color: #065f46; }
+.badge-draft { background: #fef3c7; color: #92400e; }
+.badge-section { background: var(--purple-pale); color: var(--purple); }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg); padding: 4px; border-radius: 10px; width: fit-content; border: 1px solid var(--border); flex-wrap: wrap; }
+.tab { padding: 7px 16px; border-radius: 7px; font-size: 14px; font-weight: 600; border: none; background: none; color: var(--text-muted); cursor: pointer; transition: all 0.15s; }
+.tab.active { background: var(--bg-card); color: var(--purple); box-shadow: var(--shadow); }
+.tab:hover:not(.active) { color: var(--purple); }
+
+/* POST FORM */
+.post-form-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
+.post-form-main { display: flex; flex-direction: column; gap: 16px; }
+.post-form-side { display: flex; flex-direction: column; gap: 16px; }
+.preview-toggle { display: flex; gap: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: fit-content; margin-bottom: 8px; }
+.preview-btn { padding: 5px 14px; border-radius: 5px; font-size: 13px; font-weight: 600; border: none; background: none; color: var(--text-faint); cursor: pointer; transition: all 0.15s; }
+.preview-btn.active { background: var(--bg-card); color: var(--text); box-shadow: var(--shadow); }
+.markdown-preview { padding: 12px; border: 1px solid var(--border-strong); border-radius: 8px; min-height: 280px; line-height: 1.75; color: var(--text-muted); background: var(--bg); overflow: auto; }
+.markdown-preview p { margin-bottom: 1em; }
+.markdown-preview h2, .markdown-preview h3 { color: var(--text); font-weight: 600; margin: 1.2em 0 0.5em; }
+.markdown-preview ul, .markdown-preview ol { padding-left: 1.4em; margin-bottom: 1em; }
+.markdown-preview strong { color: var(--text); }
+.markdown-preview code { background: var(--purple-pale); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+.image-preview-box { width: 100%; aspect-ratio: 16/9; border-radius: 10px; border: 2px dashed var(--border-strong); display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--bg); }
+.image-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+.image-preview-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--text-faint); }
+.image-preview-placeholder svg { width: 32px; height: 32px; }
+.image-preview-placeholder span { font-size: 12px; font-weight: 600; }
+
+/* IMAGE GRID */
+.image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.image-item { border-radius: 10px; border: 1px solid var(--border); overflow: hidden; background: var(--bg-card); cursor: pointer; transition: all 0.2s; }
+.image-item:hover { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(91,33,209,0.2); }
+.image-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.image-item-info { padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.image-item-name { font-size: 11px; color: var(--text-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.image-item-del { width: 22px; height: 22px; border-radius: 5px; border: none; background: #fef2f2; color: var(--danger); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+.image-item-del:hover { background: var(--danger); color: white; }
+.image-item-del svg { width: 12px; height: 12px; }
+
+/* CATEGORIES */
+.cat-list { display: flex; flex-direction: column; gap: 8px; }
+.cat-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); }
+.cat-item-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.cat-item-meta { font-size: 12px; color: var(--text-faint); margin-top: 2px; }
+
+/* ALERTS */
+.alert { padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 16px; }
+.alert-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.alert-success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+/* LOGIN */
+#login-page { min-height: 100vh; display: none; align-items: center; justify-content: center; background: var(--bg); padding: 20px; }
+#login-page.visible { display: flex; }
+.login-card { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border); padding: 40px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); }
+.login-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.login-title { font-size: 22px; font-weight: 700; }
+.login-sub { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+
+/* SPINNER */
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-faint); }
+.empty-state svg { width: 40px; height: 40px; margin: 0 auto 12px; display: block; opacity: 0.4; }
+.empty-state p { font-size: 14px; font-weight: 500; }
+
+/* PAGE HEADER */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.page-title { font-size: 22px; font-weight: 700; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: var(--bg-card); border-radius: 14px; border: 1px solid var(--border); width: 100%; max-width: 460px; padding: 28px; animation: slideUp 0.25s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+/* TOAST */
+.copy-toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; z-index: 9999; opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none; }
+.copy-toast.show { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .post-form-layout { grid-template-columns: 1fr; }
+  .post-form-side { position: static; }
+}
+@media (max-width: 768px) {
+  .sidebar { position: fixed; left: -100%; top: 0; bottom: 0; z-index: 200; transition: left 0.3s; box-shadow: var(--shadow-md); }
+  .sidebar.open { left: 0; }
+  .sidebar-overlay { position: fixed; inset: 0; z-index: 199; background: rgba(0,0,0,0.4); display: none; }
+  .sidebar-overlay.open { display: block; }
+  .hamburger-btn { display: flex; }
+  .form-row { grid-template-columns: 1fr; }
+  .content-area { padding: 16px; }
+  .categories-layout { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-circle"><span class="logo-m">m</span></div>
+      <div>
+        <div class="login-title">marketeruz</div>
+        <div class="login-sub">Admin paneliga kirish</div>
+      </div>
+    </div>
+    <div id="login-error" class="alert alert-error" style="display:none"></div>
+    <form id="login-form" class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="login-username">Foydalanuvchi nomi</label>
+        <input class="form-input" id="login-username" type="text" autocomplete="username" required placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Parol</label>
+        <input class="form-input" id="login-password" type="password" autocomplete="current-password" required placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary" type="submit" id="login-btn" style="width:100%;justify-content:center;padding:12px;font-size:15px">Kirish</button>
+    </form>
+  </div>
+</div>
+
+<!-- MOBILE OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-circle"><span class="logo-m">m</span></div>
+      <div><div class="logo-text">marketeruz</div><div class="logo-sub">Admin Panel</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Bosh</div>
+      <button class="nav-item active" data-view="dashboard" onclick="navigate('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <div class="nav-section-label" style="margin-top:6px">Kontent</div>
+      <button class="nav-item" data-view="posts" onclick="navigate('posts')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Postlar
+      </button>
+      <button class="nav-item" data-view="new-post" onclick="navigate('new-post')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Yangi post
+      </button>
+      <button class="nav-item" data-view="images" onclick="navigate('images')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Rasmlar
+      </button>
+      <button class="nav-item" data-view="categories" onclick="navigate('categories')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Kategoriyalar
+      </button>
+      <div class="nav-section-label" style="margin-top:6px">Tizim</div>
+      <button class="nav-item" data-view="settings" onclick="navigate('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Sozlamalar
+      </button>
+      <a class="nav-item" href="/" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Saytni ko'r
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-badge">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <span class="user-name" id="userName">admin</span>
+        <button class="logout-btn" onclick="logout()" title="Chiqish">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="openSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="5" x2="16" y2="5"/><line x1="2" y1="9" x2="16" y2="9"/><line x1="2" y1="13" x2="16" y2="13"/></svg>
+        </button>
+        <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="theme-btn" id="themeBtn">
+          <svg id="sunIcon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.78" y2="4.22"/></svg>
+          <svg id="moonIcon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-number" id="stat-total">—</div><div class="stat-label">Jami postlar</div></div>
+          <div class="stat-card"><div class="stat-number" id="stat-fikrlar">—</div><div class="stat-label">Fikrlar</div></div>
+          <div class="stat-card"><div class="stat-number" id="stat-ishlar">—</div><div class="stat-label">Ishlar</div></div>
+          <div class="stat-card"><div class="stat-number" id="stat-rasmlar">—</div><div class="stat-label">Rasmlar</div></div>
+        </div>
+        <div class="card-block">
+          <div class="card-block-title">So'nggi postlar</div>
+          <div id="recent-posts-list"><div style="color:var(--text-faint);font-size:14px;padding:20px 0">Yuklanmoqda...</div></div>
+        </div>
+      </div>
+
+      <!-- POSTS LIST -->
+      <div class="view" id="view-posts">
+        <div class="page-header">
+          <h1 class="page-title">Postlar</h1>
+          <button class="btn btn-primary" onclick="navigate('new-post')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Yangi post
+          </button>
+        </div>
+        <div class="tabs" id="posts-tabs">
+          <button class="tab active" data-section="all" onclick="filterPostsBy('all')">Hammasi</button>
+          <button class="tab" data-section="fikrlar" onclick="filterPostsBy('fikrlar')">Fikrlar</button>
+          <button class="tab" data-section="ishlar" onclick="filterPostsBy('ishlar')">Ishlar</button>
+          <button class="tab" data-section="rasmlar" onclick="filterPostsBy('rasmlar')">Rasmlar</button>
+        </div>
+        <div class="card-block">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Sarlavha</th><th>Bo'lim</th><th>Sana</th><th>Holat</th><th>Amallar</th></tr></thead>
+              <tbody id="posts-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW / EDIT POST -->
+      <div class="view" id="view-new-post">
+        <div class="page-header">
+          <h1 class="page-title" id="post-form-title">Yangi post</h1>
+          <button class="btn btn-secondary" onclick="navigate('posts')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Orqaga
+          </button>
+        </div>
+        <div id="post-form-alert" style="display:none;margin-bottom:16px"></div>
+        <div class="post-form-layout">
+          <div class="post-form-main">
+            <div class="form-group">
+              <label class="form-label" for="pf-title">Sarlavha *</label>
+              <input class="form-input" id="pf-title" type="text" placeholder="Post sarlavhasini kiriting">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pf-description">Qisqa tavsif</label>
+              <textarea class="form-textarea" id="pf-description" rows="3" placeholder="Post haqida qisqa ma'lumot..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Matn (Markdown)</label>
+              <div class="preview-toggle">
+                <button class="preview-btn active" id="tab-write" onclick="switchBodyTab('write')">Yozish</button>
+                <button class="preview-btn" id="tab-preview" onclick="switchBodyTab('preview')">Ko'rib chiqish</button>
+              </div>
+              <textarea class="form-textarea tall" id="pf-body" placeholder="Markdown formatida yozing..."></textarea>
+              <div class="markdown-preview" id="pf-preview" style="display:none"></div>
+            </div>
+          </div>
+          <div class="post-form-side">
+            <div class="card-block">
+              <div class="card-block-title">Nashr</div>
+              <div class="form-group" style="margin-bottom:14px">
+                <label class="form-check">
+                  <input type="checkbox" id="pf-published" checked>
+                  <span>Nashr qilish</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pf-date">Sana</label>
+                <input class="form-input" id="pf-date" type="date">
+              </div>
+              <div class="divider"></div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center" id="save-post-btn" onclick="savePost()">
+                Saqlash
+              </button>
+            </div>
+            <div class="card-block">
+              <div class="card-block-title">Bo'lim va kategoriya</div>
+              <div class="form-group" style="margin-bottom:12px">
+                <label class="form-label" for="pf-section">Bo'lim *</label>
+                <select class="form-select" id="pf-section">
+                  <option value="fikrlar">Fikrlar</option>
+                  <option value="ishlar">Ishlar</option>
+                  <option value="rasmlar">Rasmlar</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:12px">
+                <label class="form-label" for="pf-category">Kategoriya</label>
+                <input class="form-input" id="pf-category" type="text" placeholder="masalan: Marketing">
+              </div>
+              <div class="form-group" style="margin-bottom:12px">
+                <label class="form-label" for="pf-role">Rol <span>(ishlar uchun)</span></label>
+                <input class="form-input" id="pf-role" type="text" placeholder="masalan: Content Strategist">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pf-tags">Teglar <span>(vergul bilan)</span></label>
+                <input class="form-input" id="pf-tags" type="text" placeholder="SMM, Marketing">
+              </div>
+            </div>
+            <div class="card-block">
+              <div class="card-block-title">Rasm</div>
+              <div class="image-preview-box" id="post-img-preview">
+                <div class="image-preview-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span>Rasm yo'q</span>
+                </div>
+              </div>
+              <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+                <input class="form-input" id="pf-image" type="text" placeholder="Rasm URL" oninput="updateImagePreview()">
+                <div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:12px;color:var(--text-faint)">yoki</span><div style="flex:1;height:1px;background:var(--border)"></div></div>
+                <label class="btn btn-secondary" style="cursor:pointer;justify-content:center">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Yuklash
+                  <input type="file" accept="image/*" style="display:none" id="post-img-upload" onchange="uploadPostImage(this)">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="pf-id">
+      </div>
+
+      <!-- IMAGES -->
+      <div class="view" id="view-images">
+        <div class="page-header">
+          <h1 class="page-title">Rasm kutubxonasi</h1>
+          <label class="btn btn-primary" style="cursor:pointer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Rasm yuklash
+            <input type="file" accept="image/*" style="display:none" id="lib-upload" onchange="uploadLibraryImage(this)">
+          </label>
+        </div>
+        <div class="card-block">
+          <div class="image-grid" id="images-grid">
+            <div style="color:var(--text-faint);font-size:14px;padding:20px 0">Yuklanmoqda...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="view" id="view-categories">
+        <div class="page-header"><h1 class="page-title">Kategoriyalar</h1></div>
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start" class="categories-layout">
+          <div>
+            <div class="tabs" id="cats-tabs">
+              <button class="tab active" data-section="fikrlar" onclick="filterCatsBy('fikrlar')">Fikrlar</button>
+              <button class="tab" data-section="ishlar" onclick="filterCatsBy('ishlar')">Ishlar</button>
+              <button class="tab" data-section="rasmlar" onclick="filterCatsBy('rasmlar')">Rasmlar</button>
+            </div>
+            <div class="card-block">
+              <div class="cat-list" id="cat-list"><div style="color:var(--text-faint);font-size:14px">Yuklanmoqda...</div></div>
+            </div>
+          </div>
+          <div class="card-block" style="position:sticky;top:0">
+            <div class="card-block-title">Yangi kategoriya</div>
+            <div id="cat-form-alert" style="display:none"></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="cat-section">Bo'lim</label>
+                <select class="form-select" id="cat-section">
+                  <option value="fikrlar">Fikrlar</option>
+                  <option value="ishlar">Ishlar</option>
+                  <option value="rasmlar">Rasmlar</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cat-name">Nomi</label>
+                <input class="form-input" id="cat-name" type="text" placeholder="masalan: Marketing" oninput="autoCatSlug()">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cat-slug">Slug</label>
+                <input class="form-input" id="cat-slug" type="text" placeholder="masalan: marketing">
+              </div>
+              <button class="btn btn-primary" onclick="createCategory()">Qo'shish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="view" id="view-settings">
+        <div class="page-header"><h1 class="page-title">Sozlamalar</h1></div>
+        <div style="max-width:460px">
+          <div class="card-block">
+            <div class="card-block-title">Parolni o'zgartirish</div>
+            <div id="pwd-alert" style="display:none"></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="pwd-current">Joriy parol</label>
+                <input class="form-input" id="pwd-current" type="password" placeholder="••••••••">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pwd-new">Yangi parol</label>
+                <input class="form-input" id="pwd-new" type="password" placeholder="Kamida 6 belgi">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="pwd-confirm">Tasdiqlash</label>
+                <input class="form-input" id="pwd-confirm" type="password" placeholder="Qayta kiriting">
+              </div>
+              <button class="btn btn-primary" style="align-self:flex-start" onclick="changePassword()">Saqlash</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box">
+    <div class="modal-title">Tasdiqlash</div>
+    <p id="confirm-body" style="font-size:14px;color:var(--text-muted);line-height:1.6"></p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeConfirm()">Bekor qilish</button>
+      <button class="btn btn-danger" id="confirm-ok">Ha, o'chirish</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="copy-toast" id="copy-toast">URL nusxalandi!</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let token = localStorage.getItem('mtz_token') || null;
+let currentUser = null;
+let allPosts = [];
+let currentPostFilter = 'all';
+let currentCatFilter = 'fikrlar';
+let editingPostId = null;
+let allCategories = [];
+let confirmCallback = null;
+
+// ============================================================
+// INIT
+// ============================================================
+(async function init() {
+  applyTheme();
+  if (token) {
+    try {
+      const me = await api('/api/auth/me');
+      currentUser = me.user;
+      showApp();
+      await loadDashboard();
+    } catch {
+      token = null;
+      localStorage.removeItem('mtz_token');
+      showLogin();
+    }
+  } else {
+    showLogin();
+  }
+})();
+
+// ============================================================
+// THEME
+// ============================================================
+let dark = localStorage.getItem('mtz_theme') === 'dark';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('sunIcon').style.display = dark ? 'none' : 'block';
+  document.getElementById('moonIcon').style.display = dark ? 'block' : 'none';
+}
+document.getElementById('themeBtn').addEventListener('click', () => {
+  dark = !dark;
+  localStorage.setItem('mtz_theme', dark ? 'dark' : 'light');
+  applyTheme();
+});
+
+// ============================================================
+// AUTH
+// ============================================================
+function showLogin() {
+  document.getElementById('login-page').classList.add('visible');
+  document.getElementById('app').classList.remove('visible');
+}
+function showApp() {
+  document.getElementById('login-page').classList.remove('visible');
+  document.getElementById('app').classList.add('visible');
+  if (currentUser) {
+    document.getElementById('userName').textContent = currentUser.username;
+    document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
+  }
+}
+function logout() {
+  token = null; currentUser = null;
+  localStorage.removeItem('mtz_token');
+  showLogin();
+}
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Kirilmoqda...';
+  try {
+    const data = await rawFetch('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username: document.getElementById('login-username').value, password: document.getElementById('login-password').value })
+    });
+    if (!data.token) throw new Error(data.error || 'Noma\'lum xato');
+    token = data.token;
+    currentUser = data.user;
+    localStorage.setItem('mtz_token', token);
+    showApp();
+    navigate('dashboard');
+    await loadDashboard();
+  } catch(ex) {
+    errEl.textContent = ex.message || 'Kirish muvaffaqiyatsiz';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Kirish';
+  }
+});
+
+// ============================================================
+// API
+// ============================================================
+async function rawFetch(url, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const res = await fetch(url, { ...opts, headers });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401 && url !== '/api/auth/login') { logout(); throw new Error('Sessiya tugadi.'); }
+  if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+  return data;
+}
+async function api(url, opts) { return rawFetch(url, opts); }
+
+async function apiUpload(url, formData) {
+  const res = await fetch(url, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: formData });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) { logout(); throw new Error('Sessiya tugadi'); }
+  if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
+  return data;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const viewTitles = { dashboard: 'Dashboard', posts: 'Postlar', 'new-post': 'Post', images: 'Rasmlar', categories: 'Kategoriyalar', settings: 'Sozlamalar' };
+
+async function navigate(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item[data-view]').forEach(n => n.classList.remove('active'));
+  const target = document.getElementById('view-' + view);
+  if (target) target.classList.add('active');
+  const navEl = document.querySelector('.nav-item[data-view="' + view + '"]');
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('topbarTitle').textContent = viewTitles[view] || view;
+  closeSidebar();
+  if (view === 'dashboard') await loadDashboard();
+  else if (view === 'posts') await loadPosts();
+  else if (view === 'new-post') resetPostForm();
+  else if (view === 'images') await loadImages();
+  else if (view === 'categories') await loadCategories();
+}
+
+function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+async function loadDashboard() {
+  try {
+    allPosts = await api('/api/posts');
+    document.getElementById('stat-total').textContent = allPosts.length;
+    document.getElementById('stat-fikrlar').textContent = allPosts.filter(p => p.section === 'fikrlar').length;
+    document.getElementById('stat-ishlar').textContent = allPosts.filter(p => p.section === 'ishlar').length;
+    document.getElementById('stat-rasmlar').textContent = allPosts.filter(p => p.section === 'rasmlar').length;
+    const recent = [...allPosts].sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0)).slice(0, 8);
+    const c = document.getElementById('recent-posts-list');
+    if (!recent.length) { c.innerHTML = '<div class="empty-state"><p>Hali postlar yo\'q.</p></div>'; return; }
+    c.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Sarlavha</th><th>Bo\'lim</th><th>Sana</th><th>Holat</th><th></th></tr></thead><tbody>' +
+      recent.map(p => `<tr>
+        <td style="font-weight:600;color:var(--text)">${esc(p.title)}</td>
+        <td><span class="badge badge-section">${esc(p.section)}</span></td>
+        <td style="color:var(--text-faint)">${p.date||'—'}</td>
+        <td><span class="badge ${p.published?'badge-published':'badge-draft'}">${p.published?'Nashr':'Qoralama'}</span></td>
+        <td><button class="btn btn-sm btn-secondary" onclick="editPost(${p.id})">Tahrirlash</button></td>
+      </tr>`).join('') + '</tbody></table></div>';
+  } catch(e) { console.error('Dashboard error:', e); }
+}
+
+// ============================================================
+// POSTS LIST
+// ============================================================
+async function loadPosts() {
+  try {
+    allPosts = await api('/api/posts');
+    renderPostsTable();
+  } catch(e) { console.error(e); }
+}
+
+function filterPostsBy(section) {
+  currentPostFilter = section;
+  document.querySelectorAll('#posts-tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.section === section));
+  renderPostsTable();
+}
+
+function renderPostsTable() {
+  const filtered = currentPostFilter === 'all' ? allPosts : allPosts.filter(p => p.section === currentPostFilter);
+  const tbody = document.getElementById('posts-tbody');
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>Postlar topilmadi.</p></div></td></tr>'; return; }
+  tbody.innerHTML = filtered.map(p => `<tr>
+    <td>
+      <div style="font-weight:600;color:var(--text)">${esc(p.title)}</div>
+      ${p.description ? `<div style="font-size:12px;color:var(--text-faint);margin-top:2px">${esc(p.description.slice(0,80))}${p.description.length>80?'...':''}</div>` : ''}
+    </td>
+    <td><span class="badge badge-section">${esc(p.section)}</span></td>
+    <td style="color:var(--text-faint);white-space:nowrap">${p.date||'—'}</td>
+    <td><span class="badge ${p.published?'badge-published':'badge-draft'}">${p.published?'Nashr':'Qoralama'}</span></td>
+    <td><div style="display:flex;gap:6px;white-space:nowrap">
+      <button class="btn btn-sm btn-secondary" onclick="editPost(${p.id})">Tahrirlash</button>
+      <button class="btn btn-sm btn-danger" onclick="confirmDelete(${p.id},'${esc(p.title).replace(/'/g,"\\'")}')">O'chirish</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// ============================================================
+// POST FORM
+// ============================================================
+function resetPostForm() {
+  editingPostId = null;
+  document.getElementById('post-form-title').textContent = 'Yangi post';
+  document.getElementById('pf-id').value = '';
+  document.getElementById('pf-title').value = '';
+  document.getElementById('pf-description').value = '';
+  document.getElementById('pf-body').value = '';
+  document.getElementById('pf-section').value = 'fikrlar';
+  document.getElementById('pf-category').value = '';
+  document.getElementById('pf-role').value = '';
+  document.getElementById('pf-tags').value = '';
+  document.getElementById('pf-image').value = '';
+  document.getElementById('pf-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('pf-published').checked = true;
+  document.getElementById('post-form-alert').style.display = 'none';
+  updateImagePreview();
+  switchBodyTab('write');
+}
+
+async function editPost(id) {
+  try {
+    const post = await api('/api/posts/' + id);
+    editingPostId = id;
+    document.getElementById('pf-id').value = id;
+    document.getElementById('pf-title').value = post.title || '';
+    document.getElementById('pf-description').value = post.description || '';
+    document.getElementById('pf-body').value = post.body || '';
+    document.getElementById('pf-section').value = post.section || 'fikrlar';
+    document.getElementById('pf-category').value = post.category || '';
+    document.getElementById('pf-role').value = post.role || '';
+    document.getElementById('pf-tags').value = post.tags || '';
+    document.getElementById('pf-image').value = post.image || '';
+    document.getElementById('pf-date').value = post.date || '';
+    document.getElementById('pf-published').checked = !!post.published;
+    updateImagePreview();
+    switchBodyTab('write');
+    // Navigate to new-post view
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item[data-view]').forEach(n => n.classList.remove('active'));
+    document.getElementById('view-new-post').classList.add('active');
+    const navEl = document.querySelector('.nav-item[data-view="new-post"]');
+    if (navEl) navEl.classList.add('active');
+    document.getElementById('topbarTitle').textContent = 'Postni tahrirlash';
+    document.getElementById('post-form-title').textContent = 'Postni tahrirlash';
+    document.getElementById('post-form-alert').style.display = 'none';
+    closeSidebar();
+  } catch(e) { alert('Post yuklanmadi: ' + e.message); }
+}
+
+function switchBodyTab(tab) {
+  const write = document.getElementById('pf-body');
+  const preview = document.getElementById('pf-preview');
+  document.getElementById('tab-write').classList.toggle('active', tab === 'write');
+  document.getElementById('tab-preview').classList.toggle('active', tab === 'preview');
+  if (tab === 'preview') {
+    write.style.display = 'none';
+    preview.style.display = 'block';
+    preview.innerHTML = marked.parse(write.value || '*Bo\'sh*');
+  } else {
+    write.style.display = 'block';
+    preview.style.display = 'none';
+  }
+}
+
+function updateImagePreview() {
+  const url = document.getElementById('pf-image').value.trim();
+  const box = document.getElementById('post-img-preview');
+  if (url) {
+    box.innerHTML = '<img src="' + esc(url) + '" alt="preview" onerror="this.parentElement.innerHTML=\'<div class=\\\"image-preview-placeholder\\\"><svg viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"1.5\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"18\\\" height=\\\"18\\\" rx=\\\"2\\\"/></svg><span>Yuklanmadi</span></div>\'">';
+  } else {
+    box.innerHTML = '<div class="image-preview-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Rasm yo\'q</span></div>';
+  }
+}
+
+async function uploadPostImage(input) {
+  if (!input.files[0]) return;
+  const lbl = input.closest('label');
+  const orig = lbl.innerHTML;
+  lbl.innerHTML = '<span class="spinner" style="border-top-color:var(--purple);border-color:rgba(91,33,209,0.2)"></span> Yuklanmoqda...';
+  try {
+    const fd = new FormData(); fd.append('image', input.files[0]);
+    const data = await apiUpload('/api/upload', fd);
+    document.getElementById('pf-image').value = data.url;
+    updateImagePreview();
+  } catch(e) { alert('Xatolik: ' + e.message); }
+  finally { lbl.innerHTML = orig; input.value = ''; }
+}
+
+async function savePost() {
+  const title = document.getElementById('pf-title').value.trim();
+  const section = document.getElementById('pf-section').value;
+  if (!title) { showPostAlert('Sarlavha kiritish shart!', 'error'); return; }
+  const payload = {
+    title, section,
+    description: document.getElementById('pf-description').value.trim(),
+    body: document.getElementById('pf-body').value,
+    category: document.getElementById('pf-category').value.trim() || null,
+    role: document.getElementById('pf-role').value.trim() || null,
+    tags: document.getElementById('pf-tags').value.trim() || null,
+    image: document.getElementById('pf-image').value.trim() || null,
+    date: document.getElementById('pf-date').value || null,
+    published: document.getElementById('pf-published').checked,
+  };
+  const btn = document.getElementById('save-post-btn');
+  btn.disabled = true;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Saqlanmoqda...';
+  try {
+    if (editingPostId) {
+      await api('/api/posts/' + editingPostId, { method: 'PUT', body: JSON.stringify(payload) });
+      showPostAlert('Post yangilandi!', 'success');
+    } else {
+      await api('/api/posts', { method: 'POST', body: JSON.stringify(payload) });
+      showPostAlert('Post yaratildi!', 'success');
+      resetPostForm();
+    }
+    allPosts = await api('/api/posts');
+  } catch(e) { showPostAlert(e.message, 'error'); }
+  finally { btn.disabled = false; btn.innerHTML = orig; }
+}
+
+function showPostAlert(msg, type) {
+  const el = document.getElementById('post-form-alert');
+  el.className = 'alert alert-' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ============================================================
+// DELETE CONFIRM
+// ============================================================
+function confirmDelete(id, title) {
+  document.getElementById('confirm-body').textContent = '"' + title + '" postini o\'chirmoqchimisiz? Bu amal qaytarib bo\'lmaydi.';
+  document.getElementById('confirm-ok').onclick = () => doDeletePost(id);
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
+async function doDeletePost(id) {
+  closeConfirm();
+  try { await api('/api/posts/' + id, { method: 'DELETE' }); allPosts = allPosts.filter(p => p.id !== id); renderPostsTable(); }
+  catch(e) { alert('Xatolik: ' + e.message); }
+}
+
+// ============================================================
+// IMAGES
+// ============================================================
+async function loadImages() {
+  try {
+    const images = await api('/api/images');
+    renderImagesGrid(images);
+  } catch(e) { document.getElementById('images-grid').innerHTML = '<p style="color:var(--text-faint)">Xatolik yuz berdi.</p>'; }
+}
+
+function renderImagesGrid(images) {
+  const grid = document.getElementById('images-grid');
+  if (!images.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Hali rasmlar yo\'q</p></div>';
+    return;
+  }
+  grid.innerHTML = images.map(img => `
+    <div class="image-item" title="URL nusxalash uchun bosing" onclick="copyImageUrl('${esc(img.url)}')">
+      <img src="${esc(img.url)}" alt="${esc(img.original_name||img.filename)}" loading="lazy">
+      <div class="image-item-info">
+        <span class="image-item-name">${esc(img.original_name||img.filename)}</span>
+        <button class="image-item-del" onclick="event.stopPropagation();confirmDeleteImage(${img.id})" title="O'chirish">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function copyImageUrl(url) {
+  navigator.clipboard.writeText(window.location.origin + url).then(() => {
+    const t = document.getElementById('copy-toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  });
+}
+
+async function uploadLibraryImage(input) {
+  if (!input.files[0]) return;
+  try { const fd = new FormData(); fd.append('image', input.files[0]); await apiUpload('/api/upload', fd); await loadImages(); }
+  catch(e) { alert('Xatolik: ' + e.message); }
+  finally { input.value = ''; }
+}
+
+function confirmDeleteImage(id) {
+  document.getElementById('confirm-body').textContent = 'Rasmni o\'chirmoqchimisiz?';
+  document.getElementById('confirm-ok').onclick = () => doDeleteImage(id);
+  document.getElementById('confirm-modal').classList.add('open');
+}
+async function doDeleteImage(id) {
+  closeConfirm();
+  try { await api('/api/images/' + id, { method: 'DELETE' }); await loadImages(); }
+  catch(e) { alert('Xatolik: ' + e.message); }
+}
+
+// ============================================================
+// CATEGORIES
+// ============================================================
+async function loadCategories() {
+  try { allCategories = await api('/api/categories'); renderCategoriesList(); }
+  catch(e) { console.error(e); }
+}
+
+function filterCatsBy(section) {
+  currentCatFilter = section;
+  document.querySelectorAll('#cats-tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.section === section));
+  renderCategoriesList();
+}
+
+function renderCategoriesList() {
+  const filtered = allCategories.filter(c => c.section === currentCatFilter);
+  const list = document.getElementById('cat-list');
+  if (!filtered.length) { list.innerHTML = '<div class="empty-state"><p>Bu bo\'limda kategoriya yo\'q.</p></div>'; return; }
+  list.innerHTML = filtered.map(c => `
+    <div class="cat-item">
+      <div><div class="cat-item-name">${esc(c.name)}</div><div class="cat-item-meta">slug: ${esc(c.slug)}</div></div>
+      <button class="btn btn-sm btn-danger" onclick="confirmDeleteCat(${c.id},'${esc(c.name).replace(/'/g,"\\'")}')">O'chirish</button>
+    </div>`).join('');
+}
+
+function autoCatSlug() {
+  document.getElementById('cat-slug').value = document.getElementById('cat-name').value.toLowerCase().replace(/\s+/g,'-').replace(/[^\w-]/g,'');
+}
+
+async function createCategory() {
+  const name = document.getElementById('cat-name').value.trim();
+  const slug = document.getElementById('cat-slug').value.trim();
+  const section = document.getElementById('cat-section').value;
+  const alertEl = document.getElementById('cat-form-alert');
+  alertEl.style.display = 'none';
+  if (!name || !slug) { alertEl.className='alert alert-error'; alertEl.textContent='Ism va slug kiritish shart!'; alertEl.style.display='block'; return; }
+  try {
+    await api('/api/categories', { method: 'POST', body: JSON.stringify({ name, slug, section }) });
+    document.getElementById('cat-name').value = '';
+    document.getElementById('cat-slug').value = '';
+    allCategories = await api('/api/categories');
+    currentCatFilter = section;
+    document.querySelectorAll('#cats-tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.section === section));
+    renderCategoriesList();
+    alertEl.className='alert alert-success'; alertEl.textContent='Kategoriya qo\'shildi!'; alertEl.style.display='block';
+    setTimeout(() => { alertEl.style.display = 'none'; }, 3000);
+  } catch(e) { alertEl.className='alert alert-error'; alertEl.textContent=e.message; alertEl.style.display='block'; }
+}
+
+function confirmDeleteCat(id, name) {
+  document.getElementById('confirm-body').textContent = '"' + name + '" kategoriyasini o\'chirmoqchimisiz?';
+  document.getElementById('confirm-ok').onclick = () => doDeleteCat(id);
+  document.getElementById('confirm-modal').classList.add('open');
+}
+async function doDeleteCat(id) {
+  closeConfirm();
+  try { await api('/api/categories/' + id, { method: 'DELETE' }); allCategories = allCategories.filter(c => c.id !== id); renderCategoriesList(); }
+  catch(e) { alert('Xatolik: ' + e.message); }
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+async function changePassword() {
+  const current = document.getElementById('pwd-current').value;
+  const newPwd = document.getElementById('pwd-new').value;
+  const confirm = document.getElementById('pwd-confirm').value;
+  const alertEl = document.getElementById('pwd-alert');
+  alertEl.style.display = 'none';
+  if (!current || !newPwd || !confirm) { alertEl.className='alert alert-error'; alertEl.textContent='Barcha maydonlarni to\'ldiring.'; alertEl.style.display='block'; return; }
+  if (newPwd !== confirm) { alertEl.className='alert alert-error'; alertEl.textContent='Yangi parollar mos emas.'; alertEl.style.display='block'; return; }
+  if (newPwd.length < 6) { alertEl.className='alert alert-error'; alertEl.textContent='Parol kamida 6 belgi bo\'lishi kerak.'; alertEl.style.display='block'; return; }
+  try {
+    await api('/api/auth/password', { method: 'PUT', body: JSON.stringify({ currentPassword: current, newPassword: newPwd }) });
+    alertEl.className='alert alert-success'; alertEl.textContent='Parol muvaffaqiyatli o\'zgartirildi!'; alertEl.style.display='block';
+    document.getElementById('pwd-current').value = '';
+    document.getElementById('pwd-new').value = '';
+    document.getElementById('pwd-confirm').value = '';
+  } catch(e) { alertEl.className='alert alert-error'; alertEl.textContent=e.message; alertEl.style.display='block'; }
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+</script>
+</body>
+</html>
