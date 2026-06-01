@@ -1,9 +1,8 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 
 async function migrate() {
-  if (!process.env.DATABASE_URL) {
-    console.log('DATABASE_URL not set — using SQLite (local dev). No migration needed.');
-    console.log('To migrate to Neon PostgreSQL, set DATABASE_URL in .env and re-run.');
+  if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
+    console.log('DATABASE_URL yoki POSTGRES_URL topilmadi — SQLite ishlatilmoqda (lokal dev). Migration shart emas.');
     process.exit(0);
   }
 

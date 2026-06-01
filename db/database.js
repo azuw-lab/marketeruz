@@ -1,13 +1,19 @@
 require('dotenv').config();
 
-// Dual-mode database: PostgreSQL (Neon) when DATABASE_URL is set, SQLite otherwise
-if (process.env.DATABASE_URL) {
+// Vercel Neon integration yoki qo'lda qo'yilgan DATABASE_URL
+const PG_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+
+// Dual-mode database: PostgreSQL (Neon) when PG_URL is set, SQLite otherwise
+if (PG_URL) {
   // ── PostgreSQL mode ──────────────────────────────────────────────────────────
   const { Pool } = require('pg');
 
+  // channel_binding ni olib tashlaymiz — ba'zi Neon URLlarda muammo chiqaradi
+  const cleanUrl = PG_URL.replace(/[?&]channel_binding=[^&]*/g, '').replace(/\?$/, '');
+
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    connectionString: cleanUrl,
+    ssl: { rejectUnauthorized: false },
   });
 
   async function query(text, params) {
