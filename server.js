@@ -51,21 +51,100 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Debug endpoint — qaysi database ishlatilayotganini ko'rish uchun
-app.get('/api/debug-db', async (req, res) => {
+// Setup endpoint — production DB da migration + seed yugurtirish
+app.post('/api/setup', async (req, res) => {
+  if (req.headers['x-setup-key'] !== process.env.JWT_SECRET) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
   try {
-    const PG_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL || '';
-    let host = 'unknown';
-    try { host = new URL(PG_URL).hostname; } catch {}
     const { query } = require('./db/database');
-    const r = await query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name");
-    res.json({
-      db_host: host,
-      db_url_start: PG_URL.substring(0, 40) + '...',
-      tables: r.rows.map(x => x.table_name),
-    });
+    const bcrypt = require('bcryptjs');
+    const fs = require('fs');
+    const path = require('path');
+
+    // 1. Jadvallar yaratish
+    await query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY, username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL, role TEXT DEFAULT 'admin',
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS categories (
+        id SERIAL PRIMARY KEY, name TEXT NOT NULL,
+        slug TEXT NOT NULL, section TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(), UNIQUE(slug, section)
+      );
+      CREATE TABLE IF NOT EXISTS posts (
+        id SERIAL PRIMARY KEY, title TEXT NOT NULL,
+        slug TEXT UNIQUE NOT NULL, description TEXT, body TEXT,
+        section TEXT NOT NULL, category TEXT, role TEXT,
+        tags TEXT, image TEXT, date TEXT, published INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT NOW(), updated_at TIMESTAMP DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS images (
+        id SERIAL PRIMARY KEY, filename TEXT NOT NULL,
+        original_name TEXT, url TEXT NOT NULL, public_id TEXT,
+        post_id INTEGER REFERENCES posts(id) ON DELETE SET NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    // 2. Admin user
+    const { rows: users } = await query('SELECT COUNT(*) as c FROM users');
+    if (parseInt(users[0].c) === 0) {
+      const hashed = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin1234!', 10);
+      await query('INSERT INTO users (username, password, role) VALUES ($1,$2,$3)',
+        [process.env.ADMIN_USERNAME || 'admin', hashed, 'admin']);
+    }
+
+    // 3. Kategoriyalar
+    const cats = [
+      ['Kuzatuv','kuzatuv','fikrlar'],['Marketing','marketing','fikrlar'],
+      ['Brendlash','brendlash','fikrlar'],['Shahar','shahar','rasmlar'],
+      ['Tabiat','tabiat','rasmlar'],['Odamlar','odamlar','rasmlar'],
+      ['Loyiha','loyiha','ishlar'],['Konsalting','konsalting','ishlar'],
+    ];
+    for (const [name, slug, section] of cats) {
+      await query('INSERT INTO categories (name,slug,section) VALUES ($1,$2,$3) ON CONFLICT (slug,section) DO NOTHING',
+        [name, slug, section]);
+    }
+
+    // 4. Mavjud postlarni seed qilish
+    function parseFM(text) {
+      const fm = {}; let body = text;
+      if (text.startsWith('---')) {
+        const end = text.indexOf('---', 3);
+        if (end !== -1) {
+          text.slice(3, end).trim().split('\n').forEach(l => {
+            const i = l.indexOf(':');
+            if (i > -1) fm[l.slice(0,i).trim()] = l.slice(i+1).trim().replace(/^"|"$/g,'');
+          });
+          body = text.slice(end+3).trim();
+        }
+      }
+      return { ...fm, body };
+    }
+    function slugify(t) { return t.toLowerCase().replace(/[^\w\s-]/g,'').replace(/[\s_]+/g,'-').replace(/^-+|-+$/g,''); }
+
+    let seeded = 0;
+    for (const section of ['fikrlar','ishlar','rasmlar']) {
+      const dir = path.join(__dirname, 'posts', section);
+      if (!fs.existsSync(dir)) continue;
+      for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.md'))) {
+        const p = parseFM(fs.readFileSync(path.join(dir,f),'utf8'));
+        if (!p.title) continue;
+        const slug = slugify(p.title) + '-' + Date.now();
+        await query(`INSERT INTO posts (title,slug,description,body,section,category,role,tags,image,date,published)
+          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,1) ON CONFLICT (slug) DO NOTHING`,
+          [p.title, slug, p.description||'', p.body||'', section, p.category||null, p.role||null, p.tags||null, p.image||null, p.date||null]);
+        seeded++;
+      }
+    }
+
+    const { rows: [{ c: postCount }] } = await query('SELECT COUNT(*) as c FROM posts');
+    res.json({ ok: true, tables: 'created', admin: 'seeded', posts: postCount });
   } catch(e) {
-    res.status(500).json({ error: e.message, db_host: (() => { try { return new URL(process.env.DATABASE_URL||'').hostname; } catch { return 'parse_error'; } })() });
+    res.status(500).json({ error: e.message });
   }
 });
 
