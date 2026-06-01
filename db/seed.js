@@ -99,6 +99,53 @@ async function seed() {
     }
   }
   console.log(`Seeded ${count} posts from markdown files.`);
+
+  // Seed kitoblar (books)
+  const books = [
+    {
+      title: 'Building a StoryBrand',
+      slug: 'building-a-storybrand',
+      description: 'Brendning hikoyasini qanday yaratish haqida eng amaliy kitob.',
+      body: '## Kitob haqida\n\nDonald Millerning "Building a StoryBrand" kitobida brend o\'z mijozini qahramonqa, o\'zini esa yo\'lboshchiga aylantirishi kerakligi tushuntiriladi.\n\n## Asosiy g\'oya\n\nHar bir kuchli brend oddiy 7 qismli hikoya tuzilmasiga ega: qahramon, muammo, yo\'lboshchi, reja, harakat, muvaffaqiyatsizlikdan qochish, va muvaffaqiyat.',
+      role: 'Donald Miller',
+      section: 'kitoblar',
+      image: null,
+      date: '2025-01-01',
+    },
+    {
+      title: 'Contagious',
+      slug: 'contagious-jonah-berger',
+      description: "Nima uchun ba'zi g'oyalar va mahsulotlar tarqaladi.",
+      body: "## Kitob haqida\n\nJonah Bergerning \"Contagious\" kitobida nima uchun ba'zi narsalar viral bo'lishi va boshqalar unutilishi tushuntiriladi.\n\n## 6 ta STEPPS prinsipi\n\n- **S**ocial Currency\n- **T**riggers\n- **E**motion\n- **P**ublic\n- **P**ractical Value\n- **S**tories",
+      role: 'Jonah Berger',
+      section: 'kitoblar',
+      image: null,
+      date: '2025-01-02',
+    },
+    {
+      title: 'Ogilvy on Advertising',
+      slug: 'ogilvy-on-advertising',
+      description: 'Reklama klassikasi. Hozirgi davr uchun ham dolzarb.',
+      body: "## Kitob haqida\n\nDavid Ogilvyning bu asarida professional reklama yaratish san'ati batafsil yoritilgan.\n\n## Asosiy darslar\n\n- Mahsulot haqida to'g'ri ma'lumot bering\n- Buyuk g'oyalar hech qachon eskirmaYdi\n- Mijozingizni ahmoq deb bilmang",
+      role: 'David Ogilvy',
+      section: 'kitoblar',
+      image: null,
+      date: '2025-01-03',
+    },
+  ];
+
+  for (const book of books) {
+    const existing = await query('SELECT id FROM posts WHERE slug = $1', [book.slug]);
+    if (!existing.rows || existing.rows.length === 0) {
+      await query(
+        `INSERT INTO posts (title, slug, description, body, section, category, role, tags, image, date, published)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,1)`,
+        [book.title, book.slug, book.description, book.body, book.section, null, book.role, null, book.image, book.date]
+      );
+      console.log(`Book added: ${book.title}`);
+    }
+  }
+
   console.log('Seed complete!');
   process.exit(0);
 }

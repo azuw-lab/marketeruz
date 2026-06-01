@@ -40,8 +40,8 @@
   .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--purple); animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
   .hero h1 { font-size: clamp(3rem, 7vw, 5rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; }
-  .hero h1 em { font-style: italic; color: var(--purple); font-weight: 400; }
-  .hero-bio { font-size: 1.15rem; line-height: 1.8; color: var(--text-muted); max-width: 580px; }
+  .hero h1 em { font-style: normal; color: var(--purple); font-weight: 700; }
+  .hero-bio { font-size: clamp(1rem, 2vw, 1.15rem); line-height: 1.8; color: var(--text-muted); max-width: 100%; }
   .hero-social { display: flex; gap: 12px; }
   .social-link { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); text-decoration: none; color: var(--text-muted); font-size: 15px; font-weight: 500; transition: all 0.2s; }
   .social-link svg { width: 15px; height: 15px; flex-shrink: 0; }
@@ -94,28 +94,26 @@
   .work-tag { font-size: 13px; font-weight: 600; padding: 4px 11px; border-radius: 5px; background: var(--purple-pale); color: var(--purple); }
   .work-arrow { font-size: 20px; color: var(--purple); flex-shrink: 0; }
 
-  /* BOOKS */
-  .books-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
-  .book-card { border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
-  .book-card:hover { border-color: var(--border-hover); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); }
-  .book-cover-area { width: 100%; aspect-ratio: 3/4; background: var(--purple-pale); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .book-cover-area img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .book-cover-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  .book-cover-placeholder-icon { font-size: 36px; opacity: 0.3; }
-  .book-cover-placeholder-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
-  .book-upload-overlay { position: absolute; inset: 0; background: rgba(91,33,209,0.75); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
-  .book-cover-area:hover .book-upload-overlay { opacity: 1; }
-  .book-upload-label { font-size: 13px; font-weight: 600; color: white; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
-  .book-cover-input { display: none; }
+  /* BOOKS — same photo-card style as rasmlar */
+  .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .book-card { border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .book-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
+  .book-card:hover .card-title { color: var(--purple); }
+  .book-img-area { width: 100%; aspect-ratio: 3/4; background: var(--purple-pale); display: flex; align-items: center; justify-content: center; padding: 12px; overflow: hidden; }
+  .book-img-area img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); transition: transform 0.3s; }
+  .book-card:hover .book-img-area img { transform: scale(1.03); }
+  .book-img-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .book-img-placeholder-icon { font-size: 40px; opacity: 0.3; }
+  .book-img-placeholder-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
   .book-info { padding: 16px 18px; }
-  .book-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; color: var(--text); }
-  .book-author { font-size: 13px; color: var(--text-faint); margin-bottom: 10px; }
-  .book-note { font-size: 14px; color: var(--text-muted); line-height: 1.55; }
+  .book-author { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; }
+  .book-title-text { font-weight: 600; font-size: 15px; margin-bottom: 4px; color: var(--text); transition: color 0.2s; }
+  .book-note { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
   /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
+  .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border); max-width: 680px; width: 100%; padding: 40px; position: relative; animation: slideUp 0.3s ease; }
+  .modal { background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border); max-width: 860px; width: 100%; padding: 48px; position: relative; animation: slideUp 0.3s ease; }
   @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 18px; transition: all 0.2s; }
   .modal-close:hover { border-color: var(--purple); color: var(--purple); }
@@ -145,6 +143,17 @@
   .hamburger-btn { display: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.2s; flex-shrink: 0; }
   .hamburger-btn:hover { border-color: var(--purple); color: var(--purple); }
   .nav-mobile-menu { display: none; }
+
+  /* GALLERY OVERLAY */
+  .gallery-overlay { position: fixed; inset: 0; z-index: 998; background: var(--bg); overflow-y: auto; display: none; }
+  .gallery-overlay.open { display: block; }
+  .gallery-header { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; z-index: 10; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .gallery-title { font-size: 1.2rem; font-weight: 700; }
+  .gallery-close-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 18px; transition: all 0.2s; }
+  .gallery-close-btn:hover { border-color: var(--purple); color: var(--purple); }
+  .gallery-grid { max-width: 860px; margin: 0 auto; padding: 32px 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+  .see-all-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; color: var(--purple); background: none; border: none; cursor: pointer; padding: 0; transition: opacity 0.2s; }
+  .see-all-btn:hover { opacity: 0.7; }
 
   @media (max-width: 600px) {
     nav { padding: 0 1rem; }
@@ -231,6 +240,7 @@
 <section class="section" id="photos">
   <div class="section-header">
     <h2 class="section-title">Rasmlar</h2>
+    <button class="see-all-btn" id="rasmlar-see-all-btn" style="display:none" onclick="openGallery()">Barchasini ko'rish →</button>
   </div>
   <div id="rasmlar-container" class="cards-grid">
     <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
@@ -252,34 +262,8 @@
   <div class="section-header">
     <h2 class="section-title">Kitoblar</h2>
   </div>
-  <div class="books-row">
-    <div class="book-card">
-      <div class="book-cover-area" onclick="document.getElementById('bi1').click()">
-        <div class="book-cover-placeholder" id="bp1"><div class="book-cover-placeholder-icon">📚</div><div class="book-cover-placeholder-text">Rasm yuklash</div></div>
-        <img id="bimg1" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-        <div class="book-upload-overlay"><label class="book-upload-label" for="bi1"><span style="font-size:22px">↑</span> Rasm yuklash</label></div>
-        <input class="book-cover-input" id="bi1" type="file" accept="image/*" onchange="previewBook(this,'bimg1','bp1')">
-      </div>
-      <div class="book-info"><div class="book-title">Building a StoryBrand</div><div class="book-author">Donald Miller</div><div class="book-note">Brendning hikoyasini qanday yaratish haqida eng amaliy kitob.</div></div>
-    </div>
-    <div class="book-card">
-      <div class="book-cover-area" onclick="document.getElementById('bi2').click()">
-        <div class="book-cover-placeholder" id="bp2"><div class="book-cover-placeholder-icon">📚</div><div class="book-cover-placeholder-text">Rasm yuklash</div></div>
-        <img id="bimg2" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-        <div class="book-upload-overlay"><label class="book-upload-label" for="bi2"><span style="font-size:22px">↑</span> Rasm yuklash</label></div>
-        <input class="book-cover-input" id="bi2" type="file" accept="image/*" onchange="previewBook(this,'bimg2','bp2')">
-      </div>
-      <div class="book-info"><div class="book-title">Contagious</div><div class="book-author">Jonah Berger</div><div class="book-note">Nima uchun ba'zi g'oyalar va mahsulotlar tarqaladi.</div></div>
-    </div>
-    <div class="book-card">
-      <div class="book-cover-area" onclick="document.getElementById('bi3').click()">
-        <div class="book-cover-placeholder" id="bp3"><div class="book-cover-placeholder-icon">📚</div><div class="book-cover-placeholder-text">Rasm yuklash</div></div>
-        <img id="bimg3" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-        <div class="book-upload-overlay"><label class="book-upload-label" for="bi3"><span style="font-size:22px">↑</span> Rasm yuklash</label></div>
-        <input class="book-cover-input" id="bi3" type="file" accept="image/*" onchange="previewBook(this,'bimg3','bp3')">
-      </div>
-      <div class="book-info"><div class="book-title">Ogilvy on Advertising</div><div class="book-author">David Ogilvy</div><div class="book-note">Reklama klassikasi. Hozirgi davr uchun ham dolzarb.</div></div>
-    </div>
+  <div id="kitoblar-container" class="books-grid">
+    <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
   </div>
 </section>
 
@@ -290,6 +274,15 @@
     <a href="https://t.me/+5bb5VRnE48M1YjUy" target="_blank">Telegram</a>
   </div>
 </footer>
+
+<!-- GALLERY OVERLAY -->
+<div class="gallery-overlay" id="gallery-overlay">
+  <div class="gallery-header">
+    <span class="gallery-title">Rasmlar</span>
+    <button class="gallery-close-btn" onclick="closeGallery()">✕</button>
+  </div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</div>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="post-modal" onclick="if(event.target===this){closeModal()}">
@@ -339,18 +332,6 @@ function esc(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
-}
-
-// ── BOOK IMAGE PREVIEW ──
-function previewBook(input, previewId, placeholderId) {
-  const file = input.files[0]; if (!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    const img = document.getElementById(previewId);
-    img.src = e.target.result; img.style.display = 'block';
-    document.getElementById(placeholderId).style.display = 'none';
-  };
-  r.readAsDataURL(file);
 }
 
 // ── MODAL ──
@@ -438,10 +419,62 @@ function renderRasm(p) {
   return el;
 }
 
+function renderKitob(p) {
+  const el = document.createElement('div');
+  el.className = 'book-card';
+  const imgHtml = p.image
+    ? `<img src="${esc(p.image)}" alt="${esc(p.title)}">`
+    : `<div class="book-img-placeholder"><div class="book-img-placeholder-icon">📚</div><div class="book-img-placeholder-text">Muqova yo'q</div></div>`;
+  el.innerHTML = `
+    <div class="book-img-area">${imgHtml}</div>
+    <div class="book-info">
+      <div class="book-author">${esc(p.role || '')}</div>
+      <div class="book-title-text">${esc(p.title)}</div>
+      <div class="book-note">${esc(p.description || '')}</div>
+    </div>`;
+  if (p.body) {
+    el.onclick = () => openModal(p.role || 'Kitob', p.title, '', marked.parse(p.body || ''));
+  }
+  return el;
+}
+
+let allRasmlar = [];
+
+async function loadRasmlar() {
+  const container = document.getElementById('rasmlar-container');
+  try {
+    const res = await fetch('/api/posts?section=rasmlar');
+    if (!res.ok) { container.innerHTML = ''; return; }
+    allRasmlar = await res.json();
+    container.innerHTML = '';
+    if (!allRasmlar.length) { container.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali rasm yo\'q.</p>'; return; }
+    const visible = allRasmlar.slice(0, 3);
+    visible.forEach(p => container.appendChild(renderRasm(p)));
+    if (allRasmlar.length > 3) {
+      document.getElementById('rasmlar-see-all-btn').style.display = 'inline-flex';
+    }
+  } catch {
+    container.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali rasm yo\'q.</p>';
+  }
+}
+
+function openGallery() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '';
+  allRasmlar.forEach(p => grid.appendChild(renderRasm(p)));
+  document.getElementById('gallery-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeGallery() {
+  document.getElementById('gallery-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 // Load all sections
 loadSection('fikrlar', document.getElementById('fikrlar-container'), renderFikr);
 loadSection('ishlar', document.getElementById('ishlar-container'), renderIsh);
-loadSection('rasmlar', document.getElementById('rasmlar-container'), renderRasm);
+loadRasmlar();
+loadSection('kitoblar', document.getElementById('kitoblar-container'), renderKitob);
 </script>
 </body>
 </html>

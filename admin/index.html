@@ -422,6 +422,7 @@ tbody tr:hover { background: var(--purple-pale); }
                   <option value="fikrlar">Fikrlar</option>
                   <option value="ishlar">Ishlar</option>
                   <option value="rasmlar">Rasmlar</option>
+                  <option value="kitoblar">Kitoblar</option>
                 </select>
               </div>
               <div class="form-group" style="margin-bottom:12px">
@@ -817,6 +818,41 @@ async function editPost(id) {
     closeSidebar();
   } catch(e) { alert('Post yuklanmadi: ' + e.message); }
 }
+
+// ── MARKDOWN SHORTCUTS (Cmd/Ctrl + B/I/U) ──
+document.addEventListener('DOMContentLoaded', () => {
+  const ta = document.getElementById('pf-body');
+  if (ta) {
+    ta.addEventListener('keydown', (e) => {
+      const isMac = navigator.platform.toUpperCase().includes('MAC');
+      const mod = isMac ? e.metaKey : e.ctrlKey;
+      if (!mod) return;
+      let wrap = null;
+      if (e.key === 'b' || e.key === 'B') wrap = '**';
+      if (e.key === 'i' || e.key === 'I') wrap = '_';
+      if (e.key === 'u' || e.key === 'U') wrap = '__';
+      if (!wrap) return;
+      e.preventDefault();
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const selected = ta.value.slice(start, end);
+      const before = ta.value.slice(0, start);
+      const after = ta.value.slice(end);
+      // Toggle: if already wrapped, unwrap; otherwise wrap
+      if (before.endsWith(wrap) && after.startsWith(wrap)) {
+        ta.value = before.slice(0, -wrap.length) + selected + after.slice(wrap.length);
+        ta.selectionStart = start - wrap.length;
+        ta.selectionEnd = end - wrap.length;
+      } else {
+        ta.value = before + wrap + selected + wrap + after;
+        ta.selectionStart = selected ? start + wrap.length : start + wrap.length;
+        ta.selectionEnd = selected ? end + wrap.length : start + wrap.length;
+      }
+      // Trigger input event for any listeners
+      ta.dispatchEvent(new Event('input'));
+    });
+  }
+});
 
 function switchBodyTab(tab) {
   const write = document.getElementById('pf-body');
