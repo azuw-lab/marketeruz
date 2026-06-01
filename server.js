@@ -156,14 +156,25 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api', require('./routes/upload')); // for /api/images routes
 
 // Admin panel
-app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'index.html')));
-app.get('/admin/', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'index.html')));
+function serveAdmin(req, res) {
+  const adminPath = path.join(__dirname, 'admin', 'index.html');
+  if (fs.existsSync(adminPath)) {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(fs.readFileSync(adminPath, 'utf8'));
+  } else {
+    res.status(404).send('Admin panel topilmadi. Path: ' + adminPath);
+  }
+}
+app.get('/admin', serveAdmin);
+app.get('/admin/', serveAdmin);
 
 // Public site
 app.get('/', (req, res) => {
   const publicIndex = path.join(__dirname, 'public', 'index.html');
   const rootIndex = path.join(__dirname, 'index.html');
-  res.sendFile(fs.existsSync(publicIndex) ? publicIndex : rootIndex);
+  const filePath = fs.existsSync(publicIndex) ? publicIndex : rootIndex;
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(fs.readFileSync(filePath, 'utf8'));
 });
 
 // 404
