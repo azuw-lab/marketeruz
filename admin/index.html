@@ -174,8 +174,8 @@ tbody tr:hover { background: var(--purple-pale); }
 .alert-success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
 /* LOGIN */
-#login-page { min-height: 100vh; display: none; align-items: center; justify-content: center; background: var(--bg); padding: 20px; }
-#login-page.visible { display: flex; }
+#login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); padding: 20px; }
+#login-page.hidden { display: none; }
 .login-card { background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border); padding: 40px; width: 100%; max-width: 400px; box-shadow: var(--shadow-md); }
 .login-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
 .login-title { font-size: 22px; font-weight: 700; }
@@ -580,7 +580,7 @@ let confirmCallback = null;
 // INIT
 // ============================================================
 (async function init() {
-  applyTheme();
+  try { applyTheme(); } catch(e) { console.warn('applyTheme error:', e); }
   if (token) {
     try {
       const me = await api('/api/auth/me');
@@ -595,7 +595,7 @@ let confirmCallback = null;
   } else {
     showLogin();
   }
-})();
+})().catch(e => { console.error('init error:', e); showLogin(); });
 
 // ============================================================
 // THEME
@@ -616,11 +616,11 @@ document.getElementById('themeBtn').addEventListener('click', () => {
 // AUTH
 // ============================================================
 function showLogin() {
-  document.getElementById('login-page').classList.add('visible');
+  document.getElementById('login-page').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
 }
 function showApp() {
-  document.getElementById('login-page').classList.remove('visible');
+  document.getElementById('login-page').classList.add('hidden');
   document.getElementById('app').classList.add('visible');
   if (currentUser) {
     document.getElementById('userName').textContent = currentUser.username;
