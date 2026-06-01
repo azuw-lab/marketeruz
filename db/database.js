@@ -8,13 +8,27 @@ if (PG_URL) {
   // ── PostgreSQL mode ──────────────────────────────────────────────────────────
   const { Pool } = require('pg');
 
-  // channel_binding ni olib tashlaymiz — ba'zi Neon URLlarda muammo chiqaradi
-  const cleanUrl = PG_URL.replace(/[?&]channel_binding=[^&]*/g, '').replace(/\?$/, '');
+  // URL ni parse qilib, SSL va channel_binding muammolarini hal qilamiz
+  let poolConfig;
+  try {
+    const u = new URL(PG_URL);
+    poolConfig = {
+      host:     u.hostname,
+      port:     parseInt(u.port) || 5432,
+      user:     decodeURIComponent(u.username),
+      password: decodeURIComponent(u.password),
+      database: u.pathname.replace(/^\//, ''),
+      ssl:      { rejectUnauthorized: false },
+    };
+  } catch {
+    // URL parse xatosi bo'lsa, connectionString ishlatamiz
+    poolConfig = {
+      connectionString: PG_URL.split('?')[0], // query param larni olib tashlaymiz
+      ssl: { rejectUnauthorized: false },
+    };
+  }
 
-  const pool = new Pool({
-    connectionString: cleanUrl,
-    ssl: { rejectUnauthorized: false },
-  });
+  const pool = new Pool(poolConfig);
 
   async function query(text, params) {
     const client = await pool.connect();
