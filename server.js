@@ -51,6 +51,24 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Debug endpoint — qaysi database ishlatilayotganini ko'rish uchun
+app.get('/api/debug-db', async (req, res) => {
+  try {
+    const PG_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL || '';
+    let host = 'unknown';
+    try { host = new URL(PG_URL).hostname; } catch {}
+    const { query } = require('./db/database');
+    const r = await query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name");
+    res.json({
+      db_host: host,
+      db_url_start: PG_URL.substring(0, 40) + '...',
+      tables: r.rows.map(x => x.table_name),
+    });
+  } catch(e) {
+    res.status(500).json({ error: e.message, db_host: (() => { try { return new URL(process.env.DATABASE_URL||'').hostname; } catch { return 'parse_error'; } })() });
+  }
+});
+
 // API routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/posts', require('./routes/posts'));
