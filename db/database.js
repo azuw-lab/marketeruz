@@ -65,8 +65,19 @@ if (PG_URL) {
     }
   }
 
-  // Startup da jadvallarni yaratib olamiz
-  ensureTables().catch(e => console.error('ensureTables error:', e.message));
+  // Startup da jadvallarni yaratib, yangi ustunlarni qo'shamiz
+  async function ensureColumns() {
+    const client = await pool.connect();
+    try {
+      // views ustuni — statistika uchun
+      await client.query(`ALTER TABLE posts ADD COLUMN IF NOT EXISTS views INTEGER DEFAULT 0`);
+    } catch(e) {
+      // Agar ustun allaqachon bo'lsa yoki boshqa xato — e'tibor bermaymiz
+    } finally { client.release(); }
+  }
+  ensureTables()
+    .then(() => ensureColumns())
+    .catch(e => console.error('DB startup error:', e.message));
 
   async function query(text, params) {
     const client = await pool.connect();
