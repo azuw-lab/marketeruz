@@ -152,11 +152,11 @@
   .book-img-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .book-img-placeholder-icon { font-size: 40px; opacity: 0.3; }
   .book-img-placeholder-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
-  .book-info { padding: 12px 14px; }
-  .book-author { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px; }
-  .book-title-text { font-weight: 700; font-size: 16px; line-height: 1.3; margin-bottom: 4px; color: var(--purple); }
+  .book-info { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .book-author { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
+  .book-title-text { font-weight: 700; font-size: 17px; line-height: 1.3; color: var(--purple); margin-top: 2px; }
   [data-theme="dark"] .book-title-text { color: #ffffff; }
-  .book-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .book-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 2px; }
 
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; }
@@ -351,6 +351,7 @@
     <span class="gallery-title" id="gallery-section-title">Barchasi</span>
     <button class="gallery-close-btn" onclick="closeGallery()">✕</button>
   </div>
+  <div class="gallery-subtitle" id="gallery-subtitle" style="display:none;max-width:860px;margin:32px auto 0;padding:0 2rem;font-size:1.1rem;color:var(--text-muted)"></div>
   <div class="gallery-grid" id="gallery-grid"></div>
 </div>
 
@@ -522,14 +523,14 @@ function renderKitob(p) {
       <div class="book-title-text">${esc(p.title)}</div>
       <div class="book-note">${esc(p.description || '')}</div>
     </div>`;
-  el.onclick = () => openModal(p.role || 'Kitob', p.title, fmtDate(p.date), marked.parse(p.body || ''), p.image || null, p.id);
+  el.onclick = () => openModal(p.role || 'Kitob', p.title, p.date ? '📅 Tugatilgan: ' + fmtDate(p.date) : '', marked.parse(p.body || ''), p.image || null, p.id);
   observeReveal(el);
   return el;
 }
 
 // ── UNIVERSAL GALLERY ──
 let allFikrlar = [], allRasmlar = [], allIshlar = [], allKitoblar = [];
-const sectionTitles = { fikrlar: 'Fikrlar', rasmlar: 'Rasmlar', ishlar: 'Ishlar', kitoblar: 'Kitoblar' };
+const sectionTitles = { fikrlar: 'Fikrlar', rasmlar: 'Rasmlar', ishlar: 'Ishlar', kitoblar: "Hozirgacha o'qigan kitoblarim" };
 
 function openGallery(section) {
   const items = section === 'fikrlar' ? allFikrlar :
@@ -539,9 +540,16 @@ function openGallery(section) {
                    section === 'rasmlar' ? renderRasm :
                    section === 'ishlar' ? renderIsh : renderKitob;
   document.getElementById('gallery-section-title').textContent = sectionTitles[section] || 'Barchasi';
+  // Kitoblar uchun sub-sarlavha
+  const sub = document.getElementById('gallery-subtitle');
+  if (section === 'kitoblar') {
+    sub.textContent = "O'qigan kitoblarim — har biri bir qadam.";
+    sub.style.display = 'block';
+  } else {
+    sub.style.display = 'none';
+  }
   const grid = document.getElementById('gallery-grid');
   grid.innerHTML = '';
-  // For gallery, use different grid for ishlar
   grid.className = section === 'ishlar' ? 'gallery-grid works-list' : 'gallery-grid';
   items.forEach(p => grid.appendChild(renderFn(p)));
   document.getElementById('gallery-overlay').classList.add('open');
