@@ -16,13 +16,47 @@
     --nav-bg: rgba(250,250,249,0.85);
   }
   [data-theme="dark"] {
-    --bg: #0f0e13; --bg-card: #1a1825; --text: #f0eeff; --text-muted: #b8b0d0;
-    --text-faint: #9d95b0; --border: rgba(255,255,255,0.08); --border-hover: rgba(124,58,237,0.4);
+    --bg: #0f0e13; --bg-card: #1a1825; --text: #f0eeff; --text-muted: #b0a8c8;
+    --text-faint: #9890b0; --border: rgba(255,255,255,0.08); --border-hover: rgba(124,58,237,0.4);
     --nav-bg: rgba(15,14,19,0.85); --purple-pale: #1e1540;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body { font-family: 'Inter', sans-serif; font-size: 17px; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
+
+  /* INTRO SCREEN */
+  #intro-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  #intro-screen.fade-out {
+    animation: introFadeOut 0.6s ease forwards;
+  }
+  #intro-text {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+    color: var(--purple);
+    letter-spacing: -0.03em;
+    animation: introIn 0.5s ease;
+  }
+  @keyframes introFadeOut { to { opacity: 0; visibility: hidden; } }
+  @keyframes introIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
 
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
   .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
@@ -62,7 +96,6 @@
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   }
   .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
-  .card:hover .card-title { color: var(--purple); }
   .card-top { flex: 1; }
   .card-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
   .card-title { font-size: 1.1rem; font-weight: 600; line-height: 1.4; margin-bottom: 10px; transition: color 0.2s; color: var(--text); }
@@ -71,13 +104,25 @@
   .card-date { font-size: 13px; color: var(--text-faint); }
   .card-arrow { font-size: 18px; color: var(--purple); }
 
+  /* FIKRLAR card title — purple in light, white in dark */
+  .card-title-main { color: var(--purple); font-size: 1.1rem; font-weight: 600; line-height: 1.4; margin-bottom: 10px; transition: color 0.2s; }
+  [data-theme="dark"] .card-title-main { color: #ffffff; }
+
+  /* DARK MODE — white titles */
+  [data-theme="dark"] .card-title,
+  [data-theme="dark"] .book-title-text { color: #ffffff !important; }
+  [data-theme="dark"] .card:hover .card-title,
+  [data-theme="dark"] .photo-card:hover .card-title,
+  [data-theme="dark"] .work-card:hover .card-title,
+  [data-theme="dark"] .book-card:hover .book-title-text { color: #ffffff !important; }
+
   /* PHOTO CARDS */
   .photo-card { border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
   .photo-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
-  .photo-card:hover .card-title { color: var(--purple); }
-  .photo-img-area { width: 100%; aspect-ratio: 4/3; background: var(--purple-pale); overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  .photo-img-area img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
-  .photo-card:hover .photo-img-area img { transform: scale(1.04); }
+  /* Rasmlar photo card — kitoblar uslubida rasm */
+  .photo-img-area { width: 100%; aspect-ratio: 4/3; background: var(--purple-pale); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 10px; }
+  .photo-img-area img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); transition: transform 0.3s; }
+  .photo-card:hover .photo-img-area img { transform: scale(1.03); }
   .photo-placeholder-inner { display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .photo-icon { font-size: 32px; opacity: 0.35; }
   .photo-coming { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
@@ -95,21 +140,21 @@
   .work-tag { font-size: 13px; font-weight: 600; padding: 4px 11px; border-radius: 5px; background: var(--purple-pale); color: var(--purple); }
   .work-arrow { font-size: 20px; color: var(--purple); flex-shrink: 0; }
 
-  /* BOOKS — same photo-card style as rasmlar */
-  .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  /* BOOKS — smaller cards, bigger text */
+  .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
   .book-card { border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
   .book-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
-  .book-card:hover .card-title { color: var(--purple); }
-  .book-img-area { width: 100%; aspect-ratio: 3/4; background: var(--purple-pale); display: flex; align-items: center; justify-content: center; padding: 12px; overflow: hidden; }
-  .book-img-area img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); transition: transform 0.3s; }
+  .book-img-area { width: 100%; aspect-ratio: 2/3; background: var(--purple-pale); display: flex; align-items: center; justify-content: center; padding: 10px; overflow: hidden; }
+  .book-img-area img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); transition: transform 0.3s; }
   .book-card:hover .book-img-area img { transform: scale(1.03); }
   .book-img-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .book-img-placeholder-icon { font-size: 40px; opacity: 0.3; }
   .book-img-placeholder-text { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
-  .book-info { padding: 16px 18px; }
-  .book-author { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 6px; }
-  .book-title-text { font-weight: 600; font-size: 15px; margin-bottom: 4px; color: var(--text); transition: color 0.2s; }
-  .book-note { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .book-info { padding: 12px 14px; }
+  .book-author { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px; }
+  .book-title-text { font-weight: 700; font-size: 16px; line-height: 1.3; margin-bottom: 4px; color: var(--purple); }
+  [data-theme="dark"] .book-title-text { color: #ffffff; }
+  .book-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; }
@@ -128,7 +173,16 @@
   .modal-body strong { color: var(--text); font-weight: 600; }
   .modal-body ul, .modal-body ol { padding-left: 1.4em; margin-bottom: 1em; }
   .modal-body li { margin-bottom: 0.4em; }
-  .modal-hero-img { width: 100%; max-height: 420px; object-fit: cover; border-radius: 12px; margin-bottom: 28px; display: block; }
+  .modal-hero-img {
+    width: 60%;
+    max-width: 400px;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 0 auto 24px;
+    display: block;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
 
   /* LOADING */
   .loading-placeholder { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -154,6 +208,7 @@
   .gallery-close-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 18px; transition: all 0.2s; }
   .gallery-close-btn:hover { border-color: var(--purple); color: var(--purple); }
   .gallery-grid { max-width: 860px; margin: 0 auto; padding: 32px 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+  .gallery-grid.works-list { display: flex; flex-direction: column; gap: 16px; }
   .see-all-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; color: var(--purple); background: none; border: none; cursor: pointer; padding: 0; transition: opacity 0.2s; }
   .see-all-btn:hover { opacity: 0.7; }
 
@@ -181,6 +236,10 @@
 </style>
 </head>
 <body data-theme="light">
+
+<div id="intro-screen">
+  <span id="intro-text">marketeruz</span>
+</div>
 
 <nav>
   <a class="nav-logo" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
@@ -233,7 +292,7 @@
 <section class="section" id="thoughts">
   <div class="section-header">
     <h2 class="section-title">Fikrlar</h2>
-    <a class="see-all" href="#" id="fikrlar-all" style="display:none">Hammasini ko'r →</a>
+    <button class="see-all-btn" id="fikrlar-see-all-btn" style="display:none" onclick="openGallery('fikrlar')">Barchasini ko'rish →</button>
   </div>
   <div id="fikrlar-container" class="cards-grid">
     <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
@@ -244,7 +303,7 @@
 <section class="section" id="photos">
   <div class="section-header">
     <h2 class="section-title">Rasmlar</h2>
-    <button class="see-all-btn" id="rasmlar-see-all-btn" style="display:none" onclick="openGallery()">Barchasini ko'rish →</button>
+    <button class="see-all-btn" id="rasmlar-see-all-btn" style="display:none" onclick="openGallery('rasmlar')">Barchasini ko'rish →</button>
   </div>
   <div id="rasmlar-container" class="cards-grid">
     <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
@@ -255,6 +314,7 @@
 <section class="section" id="works">
   <div class="section-header">
     <h2 class="section-title">Ishlar</h2>
+    <button class="see-all-btn" id="ishlar-see-all-btn" style="display:none" onclick="openGallery('ishlar')">Barchasini ko'rish →</button>
   </div>
   <div id="ishlar-container" class="works-list">
     <div class="loading-placeholder"><div class="loading-card" style="height:100px"></div><div class="loading-card" style="height:100px"></div></div>
@@ -265,6 +325,7 @@
 <section class="section" id="books">
   <div class="section-header">
     <h2 class="section-title">Kitoblar</h2>
+    <button class="see-all-btn" id="kitoblar-see-all-btn" style="display:none" onclick="openGallery('kitoblar')">Barchasini ko'rish →</button>
   </div>
   <div id="kitoblar-container" class="books-grid">
     <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
@@ -282,7 +343,7 @@
 <!-- GALLERY OVERLAY -->
 <div class="gallery-overlay" id="gallery-overlay">
   <div class="gallery-header">
-    <span class="gallery-title">Rasmlar</span>
+    <span class="gallery-title" id="gallery-section-title">Barchasi</span>
     <button class="gallery-close-btn" onclick="closeGallery()">✕</button>
   </div>
   <div class="gallery-grid" id="gallery-grid"></div>
@@ -304,6 +365,11 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 <script>
+// Intro screen
+setTimeout(() => {
+  document.getElementById('intro-screen').classList.add('fade-out');
+}, 900);
+
 // ── THEME (localStorage bilan saqlanadi) ──
 const themeBtn = document.getElementById('themeBtn');
 let dark = localStorage.getItem('theme') === 'dark';
@@ -339,6 +405,21 @@ function esc(s) {
     .replace(/'/g, '&#39;');
 }
 
+// ── SCROLL REVEAL ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+function observeReveal(el) {
+  el.classList.add('reveal');
+  revealObserver.observe(el);
+}
+
 // ── MODAL ──
 function openModal(label, title, date, bodyHtml, imageUrl, postId) {
   document.getElementById('modal-label').textContent = label;
@@ -365,20 +446,6 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-// ── FETCH POSTS FROM API ──
-async function loadSection(section, containerEl, renderFn) {
-  try {
-    const res = await fetch(`/api/posts?section=${section}`);
-    if (!res.ok) { containerEl.innerHTML = ''; return; }
-    const posts = await res.json();
-    containerEl.innerHTML = '';
-    if (!posts.length) { containerEl.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali post yo\'q.</p>'; return; }
-    posts.forEach(p => containerEl.appendChild(renderFn(p)));
-  } catch {
-    containerEl.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali post yo\'q.</p>';
-  }
-}
-
 function fmtDate(d) {
   if (!d) return '';
   const months = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
@@ -391,15 +458,15 @@ function renderFikr(p) {
   el.className = 'card';
   el.innerHTML = `
     <div class="card-top">
-      <div class="card-label">${esc(p.category || 'Fikr')}</div>
-      <div class="card-title">${esc(p.title)}</div>
+      <div class="card-title-main">${esc(p.title)}</div>
       <div class="card-desc">${esc(p.description)}</div>
     </div>
     <div class="card-footer">
       <span class="card-date">${esc(fmtDate(p.date))}</span>
       <span class="card-arrow">→</span>
     </div>`;
-  el.onclick = () => openModal(p.category || 'Fikr', p.title, fmtDate(p.date), marked.parse(p.body || ''), null, p.id);
+  el.onclick = () => openModal('Fikr', p.title, fmtDate(p.date), marked.parse(p.body || ''), null, p.id);
+  observeReveal(el);
   return el;
 }
 
@@ -416,6 +483,7 @@ function renderIsh(p) {
     </div>
     <span class="work-arrow">→</span>`;
   el.onclick = () => openModal(p.role || 'Ish', p.title, fmtDate(p.date), marked.parse(p.body || ''), null, p.id);
+  observeReveal(el);
   return el;
 }
 
@@ -428,11 +496,11 @@ function renderRasm(p) {
   el.innerHTML = `
     <div class="photo-img-area">${imgHtml}</div>
     <div class="photo-info">
-      <div class="card-label">${esc(p.category || 'Rasm')}</div>
-      <div class="card-title">${esc(p.title)}</div>
+      <div class="card-title-main">${esc(p.title)}</div>
       <div class="card-desc">${esc(p.description)}</div>
     </div>`;
-  el.onclick = () => openModal(p.category || 'Rasm', p.title, fmtDate(p.date), marked.parse(p.body || ''), p.image || null, p.id);
+  el.onclick = () => openModal('Rasm', p.title, fmtDate(p.date), marked.parse(p.body || ''), p.image || null, p.id);
+  observeReveal(el);
   return el;
 }
 
@@ -441,7 +509,7 @@ function renderKitob(p) {
   el.className = 'book-card';
   const imgHtml = p.image
     ? `<img src="${esc(p.image)}" alt="${esc(p.title)}">`
-    : `<div class="book-img-placeholder"><div class="book-img-placeholder-icon">📚</div><div class="book-img-placeholder-text">Muqova yo'q</div></div>`;
+    : `<div class="book-img-placeholder"><div class="book-img-placeholder-icon">📚</div></div>`;
   el.innerHTML = `
     <div class="book-img-area">${imgHtml}</div>
     <div class="book-info">
@@ -450,46 +518,71 @@ function renderKitob(p) {
       <div class="book-note">${esc(p.description || '')}</div>
     </div>`;
   el.onclick = () => openModal(p.role || 'Kitob', p.title, fmtDate(p.date), marked.parse(p.body || ''), p.image || null, p.id);
+  observeReveal(el);
   return el;
 }
 
-let allRasmlar = [];
+// ── UNIVERSAL GALLERY ──
+let allFikrlar = [], allRasmlar = [], allIshlar = [], allKitoblar = [];
+const sectionTitles = { fikrlar: 'Fikrlar', rasmlar: 'Rasmlar', ishlar: 'Ishlar', kitoblar: 'Kitoblar' };
 
-async function loadRasmlar() {
-  const container = document.getElementById('rasmlar-container');
-  try {
-    const res = await fetch('/api/posts?section=rasmlar');
-    if (!res.ok) { container.innerHTML = ''; return; }
-    allRasmlar = await res.json();
-    container.innerHTML = '';
-    if (!allRasmlar.length) { container.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali rasm yo\'q.</p>'; return; }
-    const visible = allRasmlar.slice(0, 3);
-    visible.forEach(p => container.appendChild(renderRasm(p)));
-    if (allRasmlar.length > 3) {
-      document.getElementById('rasmlar-see-all-btn').style.display = 'inline-flex';
-    }
-  } catch {
-    container.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali rasm yo\'q.</p>';
-  }
-}
-
-function openGallery() {
+function openGallery(section) {
+  const items = section === 'fikrlar' ? allFikrlar :
+                section === 'rasmlar' ? allRasmlar :
+                section === 'ishlar' ? allIshlar : allKitoblar;
+  const renderFn = section === 'fikrlar' ? renderFikr :
+                   section === 'rasmlar' ? renderRasm :
+                   section === 'ishlar' ? renderIsh : renderKitob;
+  document.getElementById('gallery-section-title').textContent = sectionTitles[section] || 'Barchasi';
   const grid = document.getElementById('gallery-grid');
   grid.innerHTML = '';
-  allRasmlar.forEach(p => grid.appendChild(renderRasm(p)));
+  // For gallery, use different grid for ishlar
+  grid.className = section === 'ishlar' ? 'gallery-grid works-list' : 'gallery-grid';
+  items.forEach(p => grid.appendChild(renderFn(p)));
   document.getElementById('gallery-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closeGallery() {
   document.getElementById('gallery-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
 
+// ── UNIVERSAL SECTION LOADER ──
+async function loadSectionData(section, containerId, renderFn, btnId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  try {
+    const res = await fetch(`/api/posts?section=${section}`);
+    if (!res.ok) { container.innerHTML = ''; return; }
+    const posts = await res.json();
+    // Store all
+    if (section === 'fikrlar') allFikrlar = posts;
+    else if (section === 'rasmlar') allRasmlar = posts;
+    else if (section === 'ishlar') allIshlar = posts;
+    else if (section === 'kitoblar') allKitoblar = posts;
+
+    container.innerHTML = '';
+    if (!posts.length) {
+      container.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali yo\'q.</p>';
+      return;
+    }
+    posts.slice(0, 3).forEach((p) => {
+      const el = renderFn(p);
+      container.appendChild(el);
+    });
+    const btn = document.getElementById(btnId);
+    if (btn && posts.length > 3) btn.style.display = 'inline-flex';
+  } catch {
+    container.innerHTML = '<p style="color:var(--text-faint);font-size:15px">Hali yo\'q.</p>';
+  }
+}
+
 // Load all sections
-loadSection('fikrlar', document.getElementById('fikrlar-container'), renderFikr);
-loadSection('ishlar', document.getElementById('ishlar-container'), renderIsh);
-loadRasmlar();
-loadSection('kitoblar', document.getElementById('kitoblar-container'), renderKitob);
+loadSectionData('fikrlar', 'fikrlar-container', renderFikr, 'fikrlar-see-all-btn');
+loadSectionData('rasmlar', 'rasmlar-container', renderRasm, 'rasmlar-see-all-btn');
+loadSectionData('ishlar', 'ishlar-container', renderIsh, 'ishlar-see-all-btn');
+loadSectionData('kitoblar', 'kitoblar-container', renderKitob, 'kitoblar-see-all-btn');
 </script>
 </body>
 </html>
