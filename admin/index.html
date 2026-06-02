@@ -7,7 +7,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
 <style>
+/* EasyMDE override — admin stiliga moslashtirish */
+.EasyMDEContainer { border-radius: 8px; overflow: hidden; }
+.EasyMDEContainer .CodeMirror { background: var(--bg); color: var(--text); border: 1px solid var(--border-strong); border-top: none; border-radius: 0 0 8px 8px; font-family: 'Inter', sans-serif; font-size: 14px; min-height: 280px; padding: 12px; }
+.EasyMDEContainer .CodeMirror:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(91,33,209,0.1); }
+.EasyMDEContainer .editor-toolbar { background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 8px 8px 0 0; padding: 4px 8px; }
+.EasyMDEContainer .editor-toolbar button { color: var(--text-muted); border-radius: 6px; }
+.EasyMDEContainer .editor-toolbar button:hover, .EasyMDEContainer .editor-toolbar button.active { background: var(--purple-pale); color: var(--purple); }
+.EasyMDEContainer .editor-toolbar i.separator { border-color: var(--border); }
+.EasyMDEContainer .editor-preview { background: var(--bg-card); color: var(--text); padding: 16px; }
+.editor-preview p { margin-bottom: 1em; }
+.editor-preview strong { font-weight: 700; }
+</style>
 :root {
   --purple: #5B21D1; --purple-light: #7C3AED; --purple-pale: #EDE9FE; --purple-dark: #3B0FA0;
   --bg: #f5f4f9; --bg-card: #ffffff; --bg-sidebar: #ffffff;
@@ -19,7 +32,7 @@
 }
 [data-theme="dark"] {
   --bg: #0f0e13; --bg-card: #1a1825; --bg-sidebar: #13111e;
-  --text: #f0eeff; --text-muted: #a097c0; --text-faint: #6b6375;
+  --text: #f0eeff; --text-muted: #b8b0d0; --text-faint: #9d95b0;
   --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.15);
   --purple-pale: #1e1540;
 }
@@ -261,7 +274,7 @@ tbody tr:hover { background: var(--purple-pale); }
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-circle"><span class="logo-m">m</span></div>
+      <div class="logo-circle" style="width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0"><img src="/logo.svg" alt="logo" style="width:100%;height:100%;object-fit:cover;display:block"></div>
       <div><div class="logo-text">marketeruz</div><div class="logo-sub">Admin Panel</div></div>
     </div>
     <nav class="sidebar-nav">
@@ -279,10 +292,7 @@ tbody tr:hover { background: var(--purple-pale); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Yangi post
       </button>
-      <button class="nav-item" data-view="images" onclick="navigate('images')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Rasmlar
-      </button>
+      <!-- Rasmlar bo'limi olib tashlandi -->
       <button class="nav-item" data-view="categories" onclick="navigate('categories')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         Kategoriyalar
@@ -355,11 +365,12 @@ tbody tr:hover { background: var(--purple-pale); }
           <button class="tab" data-section="fikrlar" onclick="filterPostsBy('fikrlar')">Fikrlar</button>
           <button class="tab" data-section="ishlar" onclick="filterPostsBy('ishlar')">Ishlar</button>
           <button class="tab" data-section="rasmlar" onclick="filterPostsBy('rasmlar')">Rasmlar</button>
+          <button class="tab" data-section="kitoblar" onclick="filterPostsBy('kitoblar')">Kitoblar</button>
         </div>
         <div class="card-block">
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Sarlavha</th><th>Bo'lim</th><th>Sana</th><th>Holat</th><th>Amallar</th></tr></thead>
+              <thead><tr><th>Sarlavha</th><th>Bo'lim</th><th>Sana</th><th>👁 Ko'rishlar</th><th>Holat</th><th>Amallar</th></tr></thead>
               <tbody id="posts-tbody"></tbody>
             </table>
           </div>
@@ -387,13 +398,8 @@ tbody tr:hover { background: var(--purple-pale); }
               <textarea class="form-textarea" id="pf-description" rows="3" placeholder="Post haqida qisqa ma'lumot..."></textarea>
             </div>
             <div class="form-group">
-              <label class="form-label">Matn (Markdown)</label>
-              <div class="preview-toggle">
-                <button class="preview-btn active" id="tab-write" onclick="switchBodyTab('write')">Yozish</button>
-                <button class="preview-btn" id="tab-preview" onclick="switchBodyTab('preview')">Ko'rib chiqish</button>
-              </div>
-              <textarea class="form-textarea tall" id="pf-body" placeholder="Markdown formatida yozing..."></textarea>
-              <div class="markdown-preview" id="pf-preview" style="display:none"></div>
+              <label class="form-label">Matn</label>
+              <textarea id="pf-body" placeholder="Yozing..."></textarea>
             </div>
           </div>
           <div class="post-form-side">
@@ -564,6 +570,7 @@ tbody tr:hover { background: var(--purple-pale); }
 <div class="copy-toast" id="copy-toast">URL nusxalandi!</div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <script>
 // ============================================================
 // STATE
@@ -576,6 +583,35 @@ let currentCatFilter = 'fikrlar';
 let editingPostId = null;
 let allCategories = [];
 let confirmCallback = null;
+let easyMDE = null;
+
+// EasyMDE ni ishga tushirish
+function initEditor() {
+  if (easyMDE) { try { easyMDE.toTextArea(); } catch(e){} easyMDE = null; }
+  const el = document.getElementById('pf-body');
+  if (!el) return;
+  easyMDE = new EasyMDE({
+    element: el,
+    spellChecker: false,
+    status: false,
+    autofocus: false,
+    placeholder: 'Matn yozing...',
+    toolbar: [
+      { name:'bold',   action: EasyMDE.toggleBold,          className:'fa fa-bold',          title:'Qalin (Cmd+B)' },
+      { name:'italic', action: EasyMDE.toggleItalic,        className:'fa fa-italic',         title:'Kursiv (Cmd+I)' },
+      { name:'heading',action: EasyMDE.toggleHeadingSmaller,className:'fa fa-heading',        title:'Sarlavha' },
+      '|',
+      { name:'quote',  action: EasyMDE.toggleBlockquote,    className:'fa fa-quote-left',     title:'Iqtibos' },
+      { name:'ul',     action: EasyMDE.toggleUnorderedList, className:'fa fa-list-ul',        title:'Ro\'yxat' },
+      { name:'ol',     action: EasyMDE.toggleOrderedList,   className:'fa fa-list-ol',        title:'Raqamli ro\'yxat' },
+      '|',
+      { name:'preview',action: EasyMDE.togglePreview,       className:'fa fa-eye',            title:'Ko\'rib chiqish', noDisable: true },
+    ],
+    minHeight: '260px',
+  });
+}
+function getBodyValue() { return easyMDE ? easyMDE.value() : (document.getElementById('pf-body').value || ''); }
+function setBodyValue(v) { if (easyMDE) easyMDE.value(v || ''); else document.getElementById('pf-body').value = v || ''; }
 
 // ============================================================
 // INIT
@@ -751,7 +787,7 @@ function filterPostsBy(section) {
 function renderPostsTable() {
   const filtered = currentPostFilter === 'all' ? allPosts : allPosts.filter(p => p.section === currentPostFilter);
   const tbody = document.getElementById('posts-tbody');
-  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>Postlar topilmadi.</p></div></td></tr>'; return; }
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>Postlar topilmadi.</p></div></td></tr>'; return; }
   tbody.innerHTML = filtered.map(p => `<tr>
     <td>
       <div style="font-weight:600;color:var(--text)">${esc(p.title)}</div>
@@ -759,6 +795,7 @@ function renderPostsTable() {
     </td>
     <td><span class="badge badge-section">${esc(p.section)}</span></td>
     <td style="color:var(--text-faint);white-space:nowrap">${p.date||'—'}</td>
+    <td style="color:var(--text-muted);font-weight:600;text-align:center">${p.views||0}</td>
     <td><span class="badge ${p.published?'badge-published':'badge-draft'}">${p.published?'Nashr':'Qoralama'}</span></td>
     <td><div style="display:flex;gap:6px;white-space:nowrap">
       <button class="btn btn-sm btn-secondary" onclick="editPost(${p.id})">Tahrirlash</button>
@@ -776,7 +813,7 @@ function resetPostForm() {
   document.getElementById('pf-id').value = '';
   document.getElementById('pf-title').value = '';
   document.getElementById('pf-description').value = '';
-  document.getElementById('pf-body').value = '';
+  setBodyValue('');
   document.getElementById('pf-section').value = 'fikrlar';
   document.getElementById('pf-category').value = '';
   document.getElementById('pf-role').value = '';
@@ -786,7 +823,7 @@ function resetPostForm() {
   document.getElementById('pf-published').checked = true;
   document.getElementById('post-form-alert').style.display = 'none';
   updateImagePreview();
-  switchBodyTab('write');
+  setTimeout(initEditor, 50);
 }
 
 async function editPost(id) {
@@ -796,7 +833,6 @@ async function editPost(id) {
     document.getElementById('pf-id').value = id;
     document.getElementById('pf-title').value = post.title || '';
     document.getElementById('pf-description').value = post.description || '';
-    document.getElementById('pf-body').value = post.body || '';
     document.getElementById('pf-section').value = post.section || 'fikrlar';
     document.getElementById('pf-category').value = post.category || '';
     document.getElementById('pf-role').value = post.role || '';
@@ -805,7 +841,7 @@ async function editPost(id) {
     document.getElementById('pf-date').value = post.date || '';
     document.getElementById('pf-published').checked = !!post.published;
     updateImagePreview();
-    switchBodyTab('write');
+    setTimeout(() => { initEditor(); setBodyValue(post.body || ''); }, 50);
     // Navigate to new-post view
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-item[data-view]').forEach(n => n.classList.remove('active'));
@@ -820,60 +856,24 @@ async function editPost(id) {
 }
 
 // ── MARKDOWN SHORTCUTS (Cmd/Ctrl + B/I/U) ──
+// EasyMDE yuklangandan keyin ishga tushirish
 document.addEventListener('DOMContentLoaded', () => {
-  const ta = document.getElementById('pf-body');
-  if (ta) {
-    ta.addEventListener('keydown', (e) => {
-      const isMac = navigator.platform.toUpperCase().includes('MAC');
-      const mod = isMac ? e.metaKey : e.ctrlKey;
-      if (!mod) return;
-      let wrap = null;
-      if (e.key === 'b' || e.key === 'B') wrap = '**';
-      if (e.key === 'i' || e.key === 'I') wrap = '_';
-      if (e.key === 'u' || e.key === 'U') wrap = '__';
-      if (!wrap) return;
-      e.preventDefault();
-      const start = ta.selectionStart;
-      const end = ta.selectionEnd;
-      const selected = ta.value.slice(start, end);
-      const before = ta.value.slice(0, start);
-      const after = ta.value.slice(end);
-      // Toggle: if already wrapped, unwrap; otherwise wrap
-      if (before.endsWith(wrap) && after.startsWith(wrap)) {
-        ta.value = before.slice(0, -wrap.length) + selected + after.slice(wrap.length);
-        ta.selectionStart = start - wrap.length;
-        ta.selectionEnd = end - wrap.length;
-      } else {
-        ta.value = before + wrap + selected + wrap + after;
-        ta.selectionStart = selected ? start + wrap.length : start + wrap.length;
-        ta.selectionEnd = selected ? end + wrap.length : start + wrap.length;
-      }
-      // Trigger input event for any listeners
-      ta.dispatchEvent(new Event('input'));
-    });
-  }
+  // Navigate 'new-post' sahifasi ochilganda editor init bo'ladi (navigate() ichida)
 });
-
-function switchBodyTab(tab) {
-  const write = document.getElementById('pf-body');
-  const preview = document.getElementById('pf-preview');
-  document.getElementById('tab-write').classList.toggle('active', tab === 'write');
-  document.getElementById('tab-preview').classList.toggle('active', tab === 'preview');
-  if (tab === 'preview') {
-    write.style.display = 'none';
-    preview.style.display = 'block';
-    preview.innerHTML = marked.parse(write.value || '*Bo\'sh*');
-  } else {
-    write.style.display = 'block';
-    preview.style.display = 'none';
-  }
-}
 
 function updateImagePreview() {
   const url = document.getElementById('pf-image').value.trim();
   const box = document.getElementById('post-img-preview');
+  box.innerHTML = '';
   if (url) {
-    box.innerHTML = '<img src="' + esc(url) + '" alt="preview" onerror="this.parentElement.innerHTML=\'<div class=\\\"image-preview-placeholder\\\"><svg viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"1.5\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"18\\\" height=\\\"18\\\" rx=\\\"2\\\"/></svg><span>Yuklanmadi</span></div>\'">';
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'preview';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:8px';
+    img.onerror = () => {
+      box.innerHTML = '<div class="image-preview-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="3" x2="21" y2="21"/></svg><span>Yuklashda xato</span></div>';
+    };
+    box.appendChild(img);
   } else {
     box.innerHTML = '<div class="image-preview-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Rasm yo\'q</span></div>';
   }
@@ -900,7 +900,7 @@ async function savePost() {
   const payload = {
     title, section,
     description: document.getElementById('pf-description').value.trim(),
-    body: document.getElementById('pf-body').value,
+    body: getBodyValue(),
     category: document.getElementById('pf-category').value.trim() || null,
     role: document.getElementById('pf-role').value.trim() || null,
     tags: document.getElementById('pf-tags').value.trim() || null,

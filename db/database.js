@@ -50,6 +50,7 @@ if (PG_URL) {
           slug TEXT UNIQUE NOT NULL, description TEXT, body TEXT,
           section TEXT NOT NULL, category TEXT, role TEXT,
           tags TEXT, image TEXT, date TEXT, published INTEGER DEFAULT 1,
+          views INTEGER DEFAULT 0,
           created_at TIMESTAMP DEFAULT NOW(), updated_at TIMESTAMP DEFAULT NOW()
         );
         CREATE TABLE IF NOT EXISTS images (
@@ -119,6 +120,7 @@ if (PG_URL) {
       image TEXT,
       date TEXT,
       published INTEGER NOT NULL DEFAULT 1,
+      views INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );

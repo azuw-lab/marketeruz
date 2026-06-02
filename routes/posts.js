@@ -65,6 +65,16 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// POST /api/posts/:id/view — ko'rishlar sonini oshirish (public, no auth)
+router.post('/:id/view', async (req, res) => {
+  try {
+    await query('UPDATE posts SET views = COALESCE(views, 0) + 1 WHERE id = $1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // POST /api/posts — admin only
 router.post('/', auth, async (req, res) => {
   try {

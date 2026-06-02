@@ -16,8 +16,8 @@
     --nav-bg: rgba(250,250,249,0.85);
   }
   [data-theme="dark"] {
-    --bg: #0f0e13; --bg-card: #1a1825; --text: #f0eeff; --text-muted: #a097c0;
-    --text-faint: #6b6375; --border: rgba(255,255,255,0.08); --border-hover: rgba(124,58,237,0.4);
+    --bg: #0f0e13; --bg-card: #1a1825; --text: #f0eeff; --text-muted: #b8b0d0;
+    --text-faint: #9d95b0; --border: rgba(255,255,255,0.08); --border-hover: rgba(124,58,237,0.4);
     --nav-bg: rgba(15,14,19,0.85); --purple-pale: #1e1540;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,8 +26,8 @@
 
   nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
   .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
-  .logo-circle { width: 32px; height: 32px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .logo-m { font-weight: 700; font-size: 17px; color: white; letter-spacing: -0.5px; }
+  .logo-circle { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  .logo-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .nav-site-name { font-size: 16px; font-weight: 600; }
   .nav-links { display: flex; align-items: center; gap: 2rem; }
   .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 15px; font-weight: 500; transition: color 0.2s; }
@@ -83,10 +83,11 @@
   .photo-coming { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
   .photo-info { padding: 18px 20px; }
 
-  /* WORK CARDS */
-  .work-card { padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
-  .work-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
-  .work-card:hover .card-title { color: var(--purple); }
+  /* WORK CARDS — 1 kolonna, vertikal */
+  .works-list { display: flex; flex-direction: column; gap: 16px; }
+  .work-card { padding: 24px 28px; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+  .work-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,33,209,0.10); border-color: var(--border-hover); }
+  .work-card .card-title { color: var(--purple); }
   .work-left { flex: 1; }
   .work-role { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
   .work-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-top: 6px; }
@@ -127,6 +128,7 @@
   .modal-body strong { color: var(--text); font-weight: 600; }
   .modal-body ul, .modal-body ol { padding-left: 1.4em; margin-bottom: 1em; }
   .modal-body li { margin-bottom: 0.4em; }
+  .modal-hero-img { width: 100%; max-height: 420px; object-fit: cover; border-radius: 12px; margin-bottom: 28px; display: block; }
 
   /* LOADING */
   .loading-placeholder { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -181,24 +183,26 @@
 <body data-theme="light">
 
 <nav>
-  <a class="nav-logo" href="/">
-    <div class="logo-circle"><span class="logo-m">m</span></div>
+  <a class="nav-logo" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+    <div class="logo-circle"><img src="/logo.svg" alt="marketeruz logo"></div>
     <span class="nav-site-name">marketeruz</span>
   </a>
-  <div class="nav-links">
-    <a href="#thoughts">Fikrlar</a>
-    <a href="#photos">Rasmlar</a>
-    <a href="#works">Ishlar</a>
-    <a href="#books">Kitoblar</a>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px">
-  <button class="hamburger-btn" id="hamburgerBtn" title="Menyu" aria-label="Menyuni ochish">
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="5" x2="16" y2="5"/><line x1="2" y1="9" x2="16" y2="9"/><line x1="2" y1="13" x2="16" y2="13"/></svg>
-  </button>
-  <button class="theme-btn" id="themeBtn" title="Rejimni almashtirish">
-    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.78" y2="4.22"/></svg>
-    <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-  </button>
+  <div style="display:flex;align-items:center;gap:1.5rem">
+    <div class="nav-links">
+      <a href="#thoughts">Fikrlar</a>
+      <a href="#photos">Rasmlar</a>
+      <a href="#works">Ishlar</a>
+      <a href="#books">Kitoblar</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+    <button class="hamburger-btn" id="hamburgerBtn" title="Menyu" aria-label="Menyuni ochish">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="5" x2="16" y2="5"/><line x1="2" y1="9" x2="16" y2="9"/><line x1="2" y1="13" x2="16" y2="13"/></svg>
+    </button>
+    <button class="theme-btn" id="themeBtn" title="Rejimni almashtirish">
+      <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.78" y2="4.22"/></svg>
+      <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    </div>
   </div>
 </nav>
 
@@ -252,8 +256,8 @@
   <div class="section-header">
     <h2 class="section-title">Ishlar</h2>
   </div>
-  <div id="ishlar-container" class="cards-grid">
-    <div class="loading-placeholder"><div class="loading-card"></div><div class="loading-card"></div></div>
+  <div id="ishlar-container" class="works-list">
+    <div class="loading-placeholder"><div class="loading-card" style="height:100px"></div><div class="loading-card" style="height:100px"></div></div>
   </div>
 </section>
 
@@ -292,6 +296,7 @@
     <div id="modal-title" class="modal-title"></div>
     <div id="modal-date" class="modal-date"></div>
     <hr class="modal-divider">
+    <div id="modal-img-container"></div>
     <div id="modal-body" class="modal-body"></div>
   </div>
 </div>
@@ -335,13 +340,25 @@ function esc(s) {
 }
 
 // ── MODAL ──
-function openModal(label, title, date, bodyHtml) {
+function openModal(label, title, date, bodyHtml, imageUrl, postId) {
   document.getElementById('modal-label').textContent = label;
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-date').textContent = date;
+  // Rasm (rasmlar va kitoblar uchun)
+  const imgContainer = document.getElementById('modal-img-container');
+  imgContainer.innerHTML = '';
+  if (imageUrl) {
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = title;
+    img.className = 'modal-hero-img';
+    imgContainer.appendChild(img);
+  }
   document.getElementById('modal-body').innerHTML = DOMPurify.sanitize(bodyHtml);
   document.getElementById('post-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // Ko'rishlar sonini oshirish
+  if (postId) fetch(`/api/posts/${postId}/view`, { method: 'POST' }).catch(() => {});
 }
 function closeModal() {
   document.getElementById('post-modal').classList.remove('open');
@@ -382,7 +399,7 @@ function renderFikr(p) {
       <span class="card-date">${esc(fmtDate(p.date))}</span>
       <span class="card-arrow">→</span>
     </div>`;
-  el.onclick = () => openModal(p.category || 'Fikr', p.title, fmtDate(p.date), marked.parse(p.body || ''));
+  el.onclick = () => openModal(p.category || 'Fikr', p.title, fmtDate(p.date), marked.parse(p.body || ''), null, p.id);
   return el;
 }
 
@@ -398,7 +415,7 @@ function renderIsh(p) {
       <div class="work-tags">${tags.map(t => `<span class="work-tag">${esc(t)}</span>`).join('')}</div>
     </div>
     <span class="work-arrow">→</span>`;
-  el.onclick = () => openModal(p.role || 'Ish', p.title, fmtDate(p.date), marked.parse(p.body || ''));
+  el.onclick = () => openModal(p.role || 'Ish', p.title, fmtDate(p.date), marked.parse(p.body || ''), null, p.id);
   return el;
 }
 
@@ -415,7 +432,7 @@ function renderRasm(p) {
       <div class="card-title">${esc(p.title)}</div>
       <div class="card-desc">${esc(p.description)}</div>
     </div>`;
-  el.onclick = () => openModal(p.category || 'Rasm', p.title, fmtDate(p.date), marked.parse(p.body || ''));
+  el.onclick = () => openModal(p.category || 'Rasm', p.title, fmtDate(p.date), marked.parse(p.body || ''), p.image || null, p.id);
   return el;
 }
 
@@ -432,9 +449,7 @@ function renderKitob(p) {
       <div class="book-title-text">${esc(p.title)}</div>
       <div class="book-note">${esc(p.description || '')}</div>
     </div>`;
-  if (p.body) {
-    el.onclick = () => openModal(p.role || 'Kitob', p.title, '', marked.parse(p.body || ''));
-  }
+  el.onclick = () => openModal(p.role || 'Kitob', p.title, fmtDate(p.date), marked.parse(p.body || ''), p.image || null, p.id);
   return el;
 }
 
