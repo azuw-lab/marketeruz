@@ -122,7 +122,7 @@
   .photo-card { border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
   .photo-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(91,33,209,0.10); border-color: var(--border-hover); }
   /* Rasmlar photo card — kitoblar uslubida rasm */
-  .photo-img-area { width: 100%; aspect-ratio: 4/3; background: var(--purple-pale); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 10px; }
+  .photo-img-area { width: 100%; aspect-ratio: 1/1; background: var(--purple-pale); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 10px; }
   .photo-img-area img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); transition: transform 0.3s; }
   .photo-card:hover .photo-img-area img { transform: scale(1.03); }
   .photo-placeholder-inner { display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -176,14 +176,14 @@
   .modal-body ul, .modal-body ol { padding-left: 1.4em; margin-bottom: 1em; }
   .modal-body li { margin-bottom: 0.4em; }
   .modal-hero-img {
-    width: 60%;
-    max-width: 400px;
-    max-height: 320px;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    max-height: 480px;
+    object-fit: contain;
     border-radius: 12px;
     margin: 0 auto 24px;
     display: block;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
   }
 
   /* LOADING */
@@ -207,6 +207,8 @@
   .gallery-overlay.open { display: block; }
   .gallery-header { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; z-index: 10; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   .gallery-title { font-size: 1.2rem; font-weight: 700; }
+  .gallery-back-btn { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; color: var(--purple); background: none; border: none; cursor: pointer; padding: 8px 0; transition: opacity 0.2s; }
+  .gallery-back-btn:hover { opacity: 0.7; }
   .gallery-close-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 18px; transition: all 0.2s; }
   .gallery-close-btn:hover { border-color: var(--purple); color: var(--purple); }
   .gallery-grid { max-width: 860px; margin: 0 auto; padding: 32px 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
@@ -345,6 +347,7 @@
 <!-- GALLERY OVERLAY -->
 <div class="gallery-overlay" id="gallery-overlay">
   <div class="gallery-header">
+    <button class="gallery-back-btn" onclick="closeGallery()">← Orqaga</button>
     <span class="gallery-title" id="gallery-section-title">Barchasi</span>
     <button class="gallery-close-btn" onclick="closeGallery()">✕</button>
   </div>
