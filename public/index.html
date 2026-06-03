@@ -252,10 +252,10 @@
   </a>
   <div style="display:flex;align-items:center;gap:1.5rem">
     <div class="nav-links">
-      <a href="#thoughts">Fikrlar</a>
-      <a href="#photos">Rasmlar</a>
-      <a href="#works">Ishlar</a>
-      <a href="#books">Kitoblar</a>
+      <a href="#thoughts">Thoughts</a>
+      <a href="#photos">Photos</a>
+      <a href="#works">Works</a>
+      <a href="#books">Books</a>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
     <button class="hamburger-btn" id="hamburgerBtn" title="Menyu" aria-label="Menyuni ochish">
@@ -270,10 +270,10 @@
 </nav>
 
 <div class="nav-mobile-menu" id="mobileMenu">
-  <a href="#thoughts" onclick="closeMobileMenu()">Fikrlar</a>
-  <a href="#photos" onclick="closeMobileMenu()">Rasmlar</a>
-  <a href="#works" onclick="closeMobileMenu()">Ishlar</a>
-  <a href="#books" onclick="closeMobileMenu()">Kitoblar</a>
+  <a href="#thoughts" onclick="closeMobileMenu()">Thoughts</a>
+  <a href="#photos" onclick="closeMobileMenu()">Photos</a>
+  <a href="#works" onclick="closeMobileMenu()">Works</a>
+  <a href="#books" onclick="closeMobileMenu()">Books</a>
 </div>
 
 <section class="hero">
@@ -295,7 +295,7 @@
 <!-- FIKRLAR -->
 <section class="section" id="thoughts">
   <div class="section-header">
-    <h2 class="section-title">Fikrlar</h2>
+    <h2 class="section-title">Thoughts</h2>
     <button class="see-all-btn" id="fikrlar-see-all-btn" style="display:none" onclick="openGallery('fikrlar')">Barchasini ko'rish →</button>
   </div>
   <div id="fikrlar-container" class="cards-grid">
@@ -306,7 +306,7 @@
 <!-- RASMLAR -->
 <section class="section" id="photos">
   <div class="section-header">
-    <h2 class="section-title">Rasmlar</h2>
+    <h2 class="section-title">Photos</h2>
     <button class="see-all-btn" id="rasmlar-see-all-btn" style="display:none" onclick="openGallery('rasmlar')">Barchasini ko'rish →</button>
   </div>
   <div id="rasmlar-container" class="cards-grid">
@@ -317,7 +317,7 @@
 <!-- ISHLAR -->
 <section class="section" id="works">
   <div class="section-header">
-    <h2 class="section-title">Ishlar</h2>
+    <h2 class="section-title">Works</h2>
     <button class="see-all-btn" id="ishlar-see-all-btn" style="display:none" onclick="openGallery('ishlar')">Barchasini ko'rish →</button>
   </div>
   <div id="ishlar-container" class="works-list">
@@ -328,7 +328,7 @@
 <!-- KITOBLAR -->
 <section class="section" id="books">
   <div class="section-header">
-    <h2 class="section-title">Kitoblar</h2>
+    <h2 class="section-title">Books</h2>
     <button class="see-all-btn" id="kitoblar-see-all-btn" style="display:none" onclick="openGallery('kitoblar')">Barchasini ko'rish →</button>
   </div>
   <div id="kitoblar-container" class="books-grid">
@@ -530,7 +530,7 @@ function renderKitob(p) {
 
 // ── UNIVERSAL GALLERY ──
 let allFikrlar = [], allRasmlar = [], allIshlar = [], allKitoblar = [];
-const sectionTitles = { fikrlar: 'Fikrlar', rasmlar: 'Rasmlar', ishlar: 'Ishlar', kitoblar: "Hozirgacha o'qigan kitoblarim" };
+const sectionTitles = { fikrlar: 'Thoughts', rasmlar: 'Photos', ishlar: 'Works', kitoblar: "Books I've Read" };
 
 function openGallery(section) {
   const items = section === 'fikrlar' ? allFikrlar :
